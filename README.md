@@ -1,30 +1,31 @@
-# Yutong Feng website
+# Yutong Feng product storefront
 
-This repository now contains a lightweight static website that presents:
+This repository contains a lightweight static product website for:
 
-- KAU-facing Chinese teaching credibility
-- Arabic to Chinese written translation services
-- Chinese 101 recorded course
+- Arabic to Chinese written translation
+- Chinese 101 with KAU
 - Chinese practice course with WhatsApp support
-- 1-to-1 Zoom support and bundle CTA
+- Zoom 1-to-1 learning support
+- Chinese 101 + Practice bundle
 
-## Files
+## Pages
 
-- `index.html` — one-page website structure and copy
-- `styles.css` — styling inspired by the original cloned site layout and color language
-- `main.js` — mobile navigation and footer year behavior
+- `index.html` — landing page
+- `products.html` — product catalog
+- `order.html` — order draft page that opens an email to `yt.feng@foxmail.com`
+- `checkout.html` — lightweight redirect kept for old checkout links
+- `styles.css` — optimized static styling with no external font dependency
+- `main.js` — product rendering, language switching, navigation, and order email behavior
+- `translations.js` — language config placeholder
 - `.github/workflows/deploy.yml` — GitHub Pages deployment workflow
 
-## Update the site
+## Current payment status
 
-Edit `index.html` for copy, links, and prices.
+The site is ready to show products and collect order intent by email. It does not collect payment yet. After Creem approval, replace the order links with live Creem links.
 
-Main items you may still want to refine:
+## Contact
 
-- exact KAU title wording
-- final pricing
-- final contact channels
-- any product links beyond Lingotok
+Use `yt.feng@foxmail.com` for all customer and payment-provider communication.
 
 ## Deploy
 
