@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order | Yutong Feng</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./translations.js"></script>
+  <script defer src="./main.js"></script>
+</head>
+<body data-page="checkout">
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="index.html"><strong id="brandName">Yutong Feng</strong><span id="brandTagline">Language services and courses</span></a>
+      <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+        <a id="navHome" href="index.html">Home</a>
+        <a id="navProducts" href="products.html">Products</a>
+        <a id="navCheckout" href="order.html?product=bundle">Order</a>
+        <a id="navContact" href="index.html#contact">Contact</a>
+      </nav>
+      <div class="lang-switch" aria-label="Language switcher">
+        <button class="lang-btn" type="button" data-lang="en">EN</button>
+        <button class="lang-btn" type="button" data-lang="zh">中</button>
+        <button class="lang-btn" type="button" data-lang="ar">AR</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="section page-hero">
+      <div class="container checkout-layout">
+        <div class="checkout-panel">
+          <span class="success-pill">Order</span>
+          <h2 id="checkoutTitle">Order</h2>
+          <p id="checkoutLead">Choose a product, then email Yutong with your name, contact, and project details.</p>
+          <div class="field-group"><label for="productSelect">Product</label><select id="productSelect" name="product"></select></div>
+          <div class="hero-actions"><a id="emailOrderLink" class="button button-primary" href="mailto:yt.feng@foxmail.com">Email order</a><a class="button button-secondary" href="products.html">Back to products</a></div>
+        </div>
+        <aside class="checkout-panel">
+          <span class="eyebrow">Summary</span>
+          <div class="summary-box">
+            <div class="summary-line"><span>Product</span><strong id="summaryProduct">-</strong></div>
+            <div class="summary-total"><span>Total</span><strong id="summaryTotal">-</strong></div>
+          </div>
+          <p class="inline-note">Email: <a href="mailto:yt.feng@foxmail.com">yt.feng@foxmail.com</a></p>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="container"><small>© <span id="year"></span> Yutong Feng</small></div></footer>
+</body>
+</html>
