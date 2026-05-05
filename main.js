@@ -76,7 +76,7 @@ function setText(id, value) { const node = $(id); if (node) node.textContent = v
 function listItems(items) { return items.map((item) => `<li>${item}</li>`).join(''); }
 function productCard(key) {
   const product = PRODUCTS[key];
-  return `<article class="product-card"><span class="card-topline">${product.label}</span><h3>${product.name}</h3><div class="price-pill">${product.price}</div><p>${product.description}</p><ul class="feature-list">${listItems(product.features)}</ul><div class="card-actions"><a class="button button-primary" href="checkout.html?product=${key}">Order</a></div></article>`;
+  return `<article class="product-card"><span class="card-topline">${product.label}</span><h3>${product.name}</h3><div class="price-pill">${product.price}</div><p>${product.description}</p><ul class="feature-list">${listItems(product.features)}</ul><div class="card-actions"><a class="button button-primary" href="order.html?product=${key}">Order</a></div></article>`;
 }
 
 ['brandName','brandTagline','navHome','navProducts','navCheckout','navContact','langLabel','proofTitle','proofLead','featuredTitle','featuredLead','methodTitle','testimonialTitle','faqTitle','finalTitle','finalLead','finalProductsButton','finalOrderButton','footerNote','footerContactTitle','footerContactLead','footerEmailLabel','footerWhatsappLabel','footerLinkedinLabel','productsPageTitle','productsPageLead','checkoutTitle','checkoutLead'].forEach((key) => setText(key, t[key]));
@@ -100,7 +100,7 @@ document.querySelectorAll('.lang-btn').forEach((button) => {
 function renderHome() {
   const hero = $('heroMount');
   if (!hero) return;
-  hero.outerHTML = `<div class="hero-copy-shell"><span class="eyebrow">${t.hero.eyebrow}</span><h1>${t.hero.title}</h1><p class="hero-lead">${t.hero.lead}</p><div class="hero-actions"><a class="button button-primary" href="products.html">${t.hero.primary}</a><a class="button button-secondary" href="checkout.html?product=bundle">${t.hero.secondary}</a><a class="button button-secondary" href="mailto:${EMAIL}">${t.hero.tertiary}</a></div></div><aside class="glass-card"><span class="card-topline">${t.hero.panelTitle}</span><p>${t.hero.panelBody}</p><div class="hero-metrics">${t.hero.stats.map((s) => `<div class="stat-card"><strong>${s[0]}</strong><span>${s[1]}</span></div>`).join('')}</div></aside>`;
+  hero.outerHTML = `<div class="hero-copy-shell"><span class="eyebrow">${t.hero.eyebrow}</span><h1>${t.hero.title}</h1><p class="hero-lead">${t.hero.lead}</p><div class="hero-actions"><a class="button button-primary" href="products.html">${t.hero.primary}</a><a class="button button-secondary" href="order.html?product=bundle">${t.hero.secondary}</a><a class="button button-secondary" href="mailto:${EMAIL}">${t.hero.tertiary}</a></div></div><aside class="glass-card"><span class="card-topline">${t.hero.panelTitle}</span><p>${t.hero.panelBody}</p><div class="hero-metrics">${t.hero.stats.map((s) => `<div class="stat-card"><strong>${s[0]}</strong><span>${s[1]}</span></div>`).join('')}</div></aside>`;
   const proof = $('proofGrid');
   if (proof) proof.innerHTML = ['KAU-facing education','Native learning logic','Productized support'].map((title) => `<article class="glass-card"><h3>${title}</h3><p>${t.proofLead}</p></article>`).join('');
   const featured = $('featuredGrid');
@@ -110,7 +110,7 @@ function renderHome() {
   const testimonial = $('testimonialGrid');
   if (testimonial) testimonial.innerHTML = ['Beginner learner','Busy professional','Translation client'].map((title) => `<article class="quote-card"><p class="quote-mark">“</p><p>${t.featuredLead}</p><div class="quote-meta"><strong>${title}</strong></div></article>`).join('');
   const faq = $('faqList');
-  if (faq) faq.innerHTML = ['Is payment live?','What email should I use?','Which course should I start with?'].map((q, i) => `<details class="faq-item" ${i===0?'open':''}><summary>${q}</summary><p>${i===1 ? EMAIL : t.checkoutLead}</p></details>`).join('');
+  if (faq) faq.innerHTML = ['Is ordering live?','What email should I use?','Which course should I start with?'].map((q, i) => `<details class="faq-item" ${i===0?'open':''}><summary>${q}</summary><p>${i===1 ? EMAIL : t.checkoutLead}</p></details>`).join('');
 }
 
 function renderProducts() { const grid = $('productCatalog'); if (grid) grid.innerHTML = Object.keys(PRODUCTS).map(productCard).join(''); }
@@ -121,7 +121,13 @@ function renderCheckout() {
   select.innerHTML = Object.keys(PRODUCTS).map((key) => `<option value="${key}">${PRODUCTS[key].name}</option>`).join('');
   const params = new URLSearchParams(window.location.search);
   select.value = params.get('product') || 'bundle';
-  const update = () => { const product = PRODUCTS[select.value]; setText('summaryProduct', product.name); setText('summaryTotal', product.summaryPrice); };
+  const update = () => {
+    const product = PRODUCTS[select.value];
+    setText('summaryProduct', product.name);
+    setText('summaryTotal', product.summaryPrice);
+    const link = $('emailOrderLink');
+    if (link) link.href = `mailto:${EMAIL}?subject=Order inquiry: ${encodeURIComponent(product.name)}&body=${encodeURIComponent('Product: ' + product.name + '\nPlease include your name, contact, and project details.')}`;
+  };
   select.addEventListener('change', update);
   update();
   const form = $('orderForm');
