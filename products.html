@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products | Yutong Feng</title>
+  <meta name="description" content="Product catalog for Yutong Feng language services and courses." />
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./translations.js"></script>
+  <script defer src="./main.js"></script>
+</head>
+<body data-page="products">
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="index.html"><strong id="brandName">Yutong Feng</strong><span id="brandTagline">Language services and courses</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+        <a id="navHome" href="index.html">Home</a>
+        <a id="navProducts" href="products.html">Products</a>
+        <a id="navCheckout" href="checkout.html?product=bundle">Order</a>
+        <a id="navContact" href="#contact">Contact</a>
+      </nav>
+      <div class="lang-switch" aria-label="Language switcher">
+        <label id="langLabel" for="lang-en">Language</label>
+        <button id="lang-en" class="lang-btn" type="button" data-lang="en">EN</button>
+        <button class="lang-btn" type="button" data-lang="zh">中</button>
+        <button class="lang-btn" type="button" data-lang="ar">AR</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section page-hero">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Catalog</span>
+          <h2 id="productsPageTitle">Product catalog</h2>
+          <p id="productsPageLead">Choose a service and open the order draft.</p>
+        </div>
+        <div id="productCatalog" class="product-grid"></div>
+      </div>
+    </section>
+    <section id="contact" class="section section-tight">
+      <div class="container">
+        <div class="final-card">
+          <h2>Need help choosing?</h2>
+          <p>Send your learning goal or project details to yt.feng@foxmail.com.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="mailto:yt.feng@foxmail.com">Email Yutong</a>
+            <a class="button button-secondary" href="checkout.html?product=bundle">Open order draft</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-panel"><p id="footerNote"></p></div>
+      <div class="footer-panel"><div class="footer-links"><div><small id="footerEmailLabel">Email</small><a href="mailto:yt.feng@foxmail.com">yt.feng@foxmail.com</a></div><small>© <span id="year"></span> Yutong Feng</small></div></div>
+    </div>
+  </footer>
+</body>
+</html>
