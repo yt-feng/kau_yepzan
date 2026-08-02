@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: "0 */4 * * *"
   workflow_dispatch:
 
 permissions:
@@ -30,6 +32,9 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+
+      - name: Refresh video lesson data
+        run: python3 scripts/build_video_data.py --limit 36 --quiet
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

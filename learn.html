@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Learning | Yutong Feng</title>
+  <meta name="description" content="Short-video language learning lessons with instant quizzes for Arabic speakers learning English." />
+  <meta name="theme-color" content="#050816" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./translations.js"></script>
+  <script defer src="./video-data.js"></script>
+  <script defer src="./main.js"></script>
+</head>
+<body data-page="learn">
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="index.html">
+        <strong id="brandName">Yutong Feng</strong>
+        <span id="brandTagline">Arabic to Chinese · Chinese courses</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+        <a id="navHome" href="index.html">Home</a>
+        <a id="navLearn" href="learn.html">Learn</a>
+        <a id="navProducts" href="products.html">Products</a>
+        <a id="navCheckout" href="checkout.html?product=bundle">Order</a>
+        <a id="navContact" href="index.html#contact">Contact</a>
+      </nav>
+
+      <div class="lang-switch" aria-label="Language switcher">
+        <label id="langLabel" for="lang-en">Language</label>
+        <button id="lang-en" class="lang-btn" type="button" data-lang="en">EN</button>
+        <button class="lang-btn" type="button" data-lang="zh">中</button>
+        <button class="lang-btn" type="button" data-lang="ar">AR</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section learn-app">
+      <div class="container learn-layout">
+        <div class="learn-stage">
+          <div class="phone-frame">
+            <video id="lessonVideo" class="lesson-video" controls playsinline preload="metadata"></video>
+            <div id="videoFallback" class="video-fallback" hidden>
+              <strong>Video source is refreshing</strong>
+              <a id="sourceFallbackLink" href="#" target="_blank" rel="noreferrer">Open on Zhihu</a>
+            </div>
+          </div>
+          <div class="lesson-caption">
+            <span id="lessonTrack" class="success-pill">English for Arabic speakers</span>
+            <h1 id="lessonTitle">Short-video lesson</h1>
+            <p id="lessonMeta">Watch, answer, and move to the next clip.</p>
+            <div class="hero-actions">
+              <button id="prevLesson" class="button button-secondary" type="button">Previous</button>
+              <button id="nextLesson" class="button button-primary" type="button">Next lesson</button>
+              <a id="lessonApiLink" class="button button-secondary" href="#" target="_blank" rel="noreferrer">Permanent API</a>
+            </div>
+          </div>
+        </div>
+
+        <aside class="learn-side" aria-label="Video learning controls">
+          <div class="learn-summary">
+            <div>
+              <small>Answered</small>
+              <strong id="answeredCount">0</strong>
+            </div>
+            <div>
+              <small>Lessons</small>
+              <strong id="lessonCount">0</strong>
+            </div>
+            <div>
+              <small>Refreshed</small>
+              <strong id="refreshDate">Now</strong>
+            </div>
+          </div>
+
+          <div class="quiz-block">
+            <span class="eyebrow">Quiz</span>
+            <h2 id="quizQuestion">Question</h2>
+            <div id="quizAnswers" class="answer-grid"></div>
+            <p id="quizFeedback" class="quiz-feedback" aria-live="polite"></p>
+          </div>
+
+          <div class="lesson-list-shell">
+            <div class="panel-head panel-head-tight">
+              <span class="eyebrow">Lessons</span>
+              <p id="videoDataNote">Built from your Zhihu videos.</p>
+            </div>
+            <div class="lesson-filters">
+              <input id="lessonSearch" type="search" placeholder="Search lessons" />
+              <select id="voiceFilter" aria-label="Voice filter">
+                <option value="all">All voices</option>
+                <option value="Pure English">Pure English</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+            <div id="lessonList" class="lesson-list"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <small>© <span id="year"></span> Yutong Feng</small>
+    </div>
+  </footer>
+</body>
+</html>
