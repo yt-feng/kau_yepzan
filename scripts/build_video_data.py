@@ -226,11 +226,6 @@ def build_item(record, lens_map=None, resolve_missing=False):
     return {
         "id": record_id,
         "title": clean_title(record, zvideo.get("title")),
-        "sourceUrl": clean_text(record.get("URL")),
-        "zvideoApiUrl": zvideo_api_url,
-        "lensApiUrl": lens_api_url,
-        "zvideoId": zvideo_id,
-        "lensVideoId": lens_video_id,
         "videoUrl": video_url,
         "coverUrl": clean_text(lens.get("cover_url") or video.get("thumbnail") or zvideo.get("image_url")),
         "durationSeconds": duration,
@@ -259,10 +254,12 @@ def read_existing_data(path):
     return data.get("items") or []
 
 
-def refresh_existing_item(item):
+def refresh_existing_item(item, lens_map=None):
+    lens_map = lens_map or {}
+    lens_video_id = item.get("lensVideoId") or lens_map.get(item.get("id"))
     lens_api_url = item.get("lensApiUrl")
-    if not lens_api_url and item.get("lensVideoId"):
-        lens_api_url = f"https://lens.zhihu.com/api/v4/videos/{item['lensVideoId']}"
+    if not lens_api_url and lens_video_id:
+        lens_api_url = f"https://lens.zhihu.com/api/v4/videos/{lens_video_id}"
     if not lens_api_url:
         return item
     lens = fetch_json(lens_api_url)
@@ -313,11 +310,11 @@ def main():
             if item and item["videoUrl"]:
                 items.append(item)
                 if not args.quiet:
-                    print(f"added {item['id']} {item['lensVideoId']}", file=sys.stderr)
+                    print(f"added {item['id']}", file=sys.stderr)
     elif output.exists():
         for item in read_existing_data(output)[:args.limit]:
             try:
-                items.append(refresh_existing_item(item))
+                items.append(refresh_existing_item(item, lens_map=lens_map))
             except Exception as exc:
                 errors.append({"id": clean_text(item.get("id")), "error": str(exc)[:180]})
     else:
@@ -326,8 +323,6 @@ def main():
 
     data = {
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "sourceWorkbook": str(source) if source.exists() else str(output),
-        "refreshNote": "Video URLs are refreshed from permanent Zhihu API links during GitHub Pages deployment.",
         "items": items,
         "errors": errors[:12],
     }

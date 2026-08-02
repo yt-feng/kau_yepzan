@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Video Learning | Yutong Feng</title>
-  <meta name="description" content="Short-video language learning lessons with instant quizzes for Arabic speakers learning English." />
+  <title>Short-Video Practice | Yutong Feng</title>
+  <meta name="description" content="Short-video language practice with instant quizzes for Arabic speakers learning English." />
   <meta name="theme-color" content="#050816" />
   <link rel="stylesheet" href="./styles.css" />
   <script defer src="./translations.js"></script>
@@ -16,7 +16,7 @@
     <div class="container nav-shell">
       <a class="brand" href="index.html">
         <strong id="brandName">Yutong Feng</strong>
-        <span id="brandTagline">Arabic to Chinese · Chinese courses</span>
+        <span id="brandTagline">Language practice · Chinese courses</span>
       </a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@
         <a id="navHome" href="index.html">Home</a>
         <a id="navLearn" href="learn.html">Learn</a>
         <a id="navProducts" href="products.html">Products</a>
-        <a id="navCheckout" href="checkout.html?product=bundle">Order</a>
+        <a id="navCheckout" href="order.html?product=bundle">Inquiry</a>
         <a id="navContact" href="index.html#contact">Contact</a>
       </nav>
 
@@ -47,8 +47,8 @@
           <div class="phone-frame">
             <video id="lessonVideo" class="lesson-video" controls playsinline preload="metadata"></video>
             <div id="videoFallback" class="video-fallback" hidden>
-              <strong>Video source is refreshing</strong>
-              <a id="sourceFallbackLink" href="#" target="_blank" rel="noreferrer">Open on Zhihu</a>
+              <strong>This lesson is taking a moment to load.</strong>
+              <button id="fallbackNext" class="button button-primary" type="button">Try the next lesson</button>
             </div>
           </div>
           <div class="lesson-caption">
@@ -57,8 +57,8 @@
             <p id="lessonMeta">Watch, answer, and move to the next clip.</p>
             <div class="hero-actions">
               <button id="prevLesson" class="button button-secondary" type="button">Previous</button>
+              <button id="replayLesson" class="button button-secondary" type="button">Replay</button>
               <button id="nextLesson" class="button button-primary" type="button">Next lesson</button>
-              <a id="lessonApiLink" class="button button-secondary" href="#" target="_blank" rel="noreferrer">Permanent API</a>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
         <aside class="learn-side" aria-label="Video learning controls">
           <div class="learn-summary">
             <div>
-              <small>Answered</small>
+              <small>Completed</small>
               <strong id="answeredCount">0</strong>
             </div>
             <div>
@@ -74,8 +74,8 @@
               <strong id="lessonCount">0</strong>
             </div>
             <div>
-              <small>Refreshed</small>
-              <strong id="refreshDate">Now</strong>
+              <small>Mode</small>
+              <strong id="practiceMode">Quiz</strong>
             </div>
           </div>
 
@@ -89,14 +89,14 @@
           <div class="lesson-list-shell">
             <div class="panel-head panel-head-tight">
               <span class="eyebrow">Lessons</span>
-              <p id="videoDataNote">Built from your Zhihu videos.</p>
+              <p id="videoDataNote">Pick a clip or continue in order.</p>
             </div>
             <div class="lesson-filters">
-              <input id="lessonSearch" type="search" placeholder="Search lessons" />
+              <input id="lessonSearch" type="search" placeholder="Search topics" />
               <select id="voiceFilter" aria-label="Voice filter">
-                <option value="all">All voices</option>
-                <option value="Pure English">Pure English</option>
-                <option value="Mixed">Mixed</option>
+                <option value="all">All clips</option>
+                <option value="Pure English">English only</option>
+                <option value="Mixed">With Arabic support</option>
               </select>
             </div>
             <div id="lessonList" class="lesson-list"></div>

@@ -1,6 +1,6 @@
-# Yutong Feng product storefront
+# Yutong Feng language site
 
-This repository contains a lightweight static product website for:
+This repository contains a lightweight static website for:
 
 - Arabic to Chinese written translation
 - Chinese 101 with KAU
@@ -14,7 +14,7 @@ This repository contains a lightweight static product website for:
 - `index.html` — landing page
 - `learn.html` — short-video learning module built from the Zhihu video spreadsheet
 - `products.html` — product catalog
-- `order.html` — order draft page that opens an email to `yt.feng@foxmail.com`
+- `order.html` — inquiry page that opens an email to `yt.feng@foxmail.com`
 - `checkout.html` — lightweight redirect kept for old checkout links
 - `styles.css` — optimized static styling with no external font dependency
 - `main.js` — product rendering, language switching, navigation, and order email behavior
@@ -23,13 +23,9 @@ This repository contains a lightweight static product website for:
 - `translations.js` — language config placeholder
 - `.github/workflows/deploy.yml` — GitHub Pages deployment workflow
 
-## Current payment status
-
-The site is ready to show products and collect order intent by email. It does not collect payment yet. After Creem approval, replace the order links with live Creem links.
-
 ## Contact
 
-Use `yt.feng@foxmail.com` for all customer and payment-provider communication.
+Use `yt.feng@foxmail.com` for customer questions, learning plans, and translation quotes.
 
 ## Deploy
 

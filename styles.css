@@ -179,6 +179,7 @@ img { display: block; max-width: 100%; }
 }
 .lesson-row span { display: grid; grid-template-columns: 48px 1fr; gap: 0.55rem; align-items: start; }
 .lesson-row strong { color: var(--accent-2); }
+.lesson-row em { font-style: normal; }
 .lesson-row small { color: var(--muted); }
 .lesson-row.is-active { border-color: rgba(0,213,255,0.48); background: rgba(0,213,255,0.1); }
 @media (max-width: 960px) {
