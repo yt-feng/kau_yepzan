@@ -167,16 +167,10 @@ function renderCheckout() {
   });
 }
 
-const LEARN_PROGRESS_KEY = 'yepzanVideoProgress';
-
-function readProgress() {
-  try { return JSON.parse(localStorage.getItem(LEARN_PROGRESS_KEY) || '{}'); }
-  catch { return {}; }
-}
-
-function writeProgress(progress) {
-  localStorage.setItem(LEARN_PROGRESS_KEY, JSON.stringify(progress));
-}
+const LEGACY_LEARN_PROGRESS_KEY = 'yepzanVideoProgress';
+const SHORTS_STATE_KEY = 'yepzanShortsState.v2';
+const DAILY_GOAL = 5;
+const RATE_STEPS = [0.75, 1, 1.25, 1.5];
 
 function formatDuration(seconds) {
   const value = Number(seconds) || 0;
@@ -185,144 +179,713 @@ function formatDuration(seconds) {
   return `${minutes}:${rest}`;
 }
 
-function renderLearn() {
-  const video = $('lessonVideo');
-  if (!video) return;
+function dateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
-  const data = window.LEARN_VIDEO_DATA || { items: [] };
-  const items = Array.isArray(data.items) ? data.items : [];
-  const progress = readProgress();
-  let currentId = items[0]?.id || '';
-  let filteredItems = items.slice();
+function safeJson(value, fallback) {
+  try { return JSON.parse(value || ''); }
+  catch { return fallback; }
+}
 
-  const search = $('lessonSearch');
-  const voiceFilter = $('voiceFilter');
-  const list = $('lessonList');
-  const fallback = $('videoFallback');
+function hashString(value) {
+  let hash = 0;
+  const text = String(value || '');
+  for (let i = 0; i < text.length; i += 1) hash = ((hash << 5) - hash + text.charCodeAt(i)) | 0;
+  return Math.abs(hash);
+}
 
-  function lessonNumber(item) {
-    return Math.max(items.findIndex((lesson) => lesson.id === item?.id) + 1, 1);
-  }
+function compactCount(value) {
+  const number = Math.max(0, Number(value) || 0);
+  if (number >= 1000000) return `${(number / 1000000).toFixed(1)}m`;
+  if (number >= 1000) return `${(number / 1000).toFixed(number >= 10000 ? 0 : 1)}k`;
+  return String(number);
+}
 
-  function voiceLabel(item) {
-    return item?.voice === 'Pure English' ? 'English only' : 'With Arabic support';
-  }
+function defaultShortsState() {
+  return {
+    xp: 0,
+    streak: 0,
+    lastActiveDate: '',
+    activeId: '',
+    seed: Math.floor(Math.random() * 1000000),
+    muted: true,
+    captions: true,
+    rate: 1,
+    completed: {},
+    answers: {},
+    likes: {},
+    favorites: {},
+    rewards: {},
+    migratedLegacy: false
+  };
+}
 
-  function cleanLessonTitle(item) {
-    const title = String(item?.title || '').replace(/^A\d+\s*/, '').trim();
-    if (!title || /^Lesson\s+A\d+$/i.test(title)) return 'Quick practice clip';
-    return title;
-  }
+function normalizeShortsState(input) {
+  const state = {...defaultShortsState(), ...(input || {})};
+  ['completed', 'answers', 'likes', 'favorites', 'rewards'].forEach((key) => {
+    if (!state[key] || typeof state[key] !== 'object' || Array.isArray(state[key])) state[key] = {};
+  });
+  state.xp = Math.max(0, Number(state.xp) || 0);
+  state.streak = Math.max(0, Number(state.streak) || 0);
+  state.rate = RATE_STEPS.includes(Number(state.rate)) ? Number(state.rate) : 1;
+  state.muted = state.muted !== false;
+  state.captions = state.captions !== false;
+  state.seed = Number(state.seed) || Math.floor(Math.random() * 1000000);
+  return state;
+}
 
-  function selectedItem() {
-    return filteredItems.find((item) => item.id === currentId) || filteredItems[0] || items[0];
-  }
-
-  function refreshFiltered() {
-    const term = (search?.value || '').trim().toLowerCase();
-    const voice = voiceFilter?.value || 'all';
-    filteredItems = items.filter((item) => {
-      const text = `${item.id} ${item.title} ${item.prompt}`.toLowerCase();
-      const matchesText = !term || text.includes(term);
-      const matchesVoice = voice === 'all' || item.voice === voice;
-      return matchesText && matchesVoice;
+function readShortsState() {
+  const state = normalizeShortsState(safeJson(localStorage.getItem(SHORTS_STATE_KEY), null));
+  if (!state.migratedLegacy) {
+    const legacy = safeJson(localStorage.getItem(LEGACY_LEARN_PROGRESS_KEY), {});
+    Object.keys(legacy || {}).forEach((id) => {
+      if (!state.answers[id]) {
+        state.answers[id] = {
+          selected: Number(legacy[id].selected),
+          correct: Boolean(legacy[id].correct),
+          date: dateKey(),
+          at: Date.now()
+        };
+      }
     });
-    if (!filteredItems.some((item) => item.id === currentId)) currentId = filteredItems[0]?.id || items[0]?.id || '';
+    state.migratedLegacy = true;
+    writeShortsState(state);
+  }
+  return state;
+}
+
+function writeShortsState(state) {
+  localStorage.setItem(SHORTS_STATE_KEY, JSON.stringify(state));
+}
+
+function recordDate(record) {
+  if (!record) return '';
+  if (typeof record === 'string') return record;
+  return record.date || '';
+}
+
+function cleanLessonTitle(item) {
+  const rawTitle = String(item?.title || '').replace(/^A\d+\s*/, '').trim();
+  if (rawTitle && !/^Lesson\s+A\d+$/i.test(rawTitle)) return rawTitle;
+  const prompt = String(item?.prompt || '');
+  const quoted = prompt.match(/"([^"]+)"/);
+  if (quoted?.[1]) return quoted[1];
+  return prompt.replace(/\?$/, '') || 'Daily expression';
+}
+
+function voiceLabel(item) {
+  return item?.voice === 'Pure English' ? 'English only' : 'Arabic support';
+}
+
+function getDeviceProfile(state) {
+  const language = (navigator.language || currentLang || 'en').toLowerCase();
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+  const answers = Object.values(state.answers || {});
+  const answeredCount = answers.length;
+  const correctCount = answers.filter((answer) => answer.correct).length;
+  const accuracy = answeredCount ? correctCount / answeredCount : 0;
+  const narrow = window.matchMedia?.('(max-width: 720px)').matches || window.innerWidth <= 720;
+  const touch = window.matchMedia?.('(pointer: coarse)').matches || 'ontouchstart' in window;
+  return {
+    prefersSupport: language.startsWith('ar') || currentLang === 'ar' || accuracy < 0.55,
+    pureEnglishReady: answeredCount > 2 && accuracy > 0.72,
+    mobileLike: narrow || touch,
+    slowConnection: Boolean(connection.saveData) || ['slow-2g', '2g', '3g'].includes(connection.effectiveType),
+    localHour: new Date().getHours()
+  };
+}
+
+function rankShorts(items, state, profile) {
+  return items.map((item, index) => {
+    const duration = Number(item.durationSeconds) || 30;
+    let score = 1000 - index * 0.8;
+    if (!state.completed[item.id]) score += 80;
+    else score -= 40;
+    if (!state.answers[item.id]) score += 38;
+    if (state.likes[item.id]) score += 30;
+    if (state.favorites[item.id]) score += 42;
+    if (profile.prefersSupport && item.voice === 'Mixed') score += 26;
+    if (profile.pureEnglishReady && item.voice === 'Pure English') score += 18;
+    if (profile.mobileLike || profile.slowConnection) score += Math.max(0, 75 - duration) * 0.55;
+    else score += Math.min(duration, 90) * 0.12;
+    if (profile.localHour >= 6 && profile.localHour <= 10 && duration <= 30) score += 10;
+    score += (hashString(`${item.id}:${state.seed}`) % 100) / 100;
+    return {item, score};
+  }).sort((a, b) => b.score - a.score).map(({item}) => item);
+}
+
+function touchLearningDay(state) {
+  const today = dateKey();
+  if (state.lastActiveDate === today) return;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  state.streak = state.lastActiveDate === dateKey(yesterday) ? state.streak + 1 : 1;
+  state.lastActiveDate = today;
+}
+
+function todayMetrics(state) {
+  const today = dateKey();
+  const completed = Object.values(state.completed || {}).filter((record) => recordDate(record) === today).length;
+  const answers = Object.values(state.answers || {}).filter((record) => recordDate(record) === today);
+  const likes = Object.values(state.likes || {}).filter((record) => recordDate(record) === today).length;
+  return {
+    completed,
+    answered: answers.length,
+    correct: answers.filter((record) => record.correct).length,
+    likes
+  };
+}
+
+function buildMissions(state) {
+  const metrics = todayMetrics(state);
+  return [
+    {id: 'watch3', title: 'Watch 3 clips', current: metrics.completed, target: 3, xp: 20},
+    {id: 'answer3', title: 'Answer 3 quizzes', current: metrics.answered, target: 3, xp: 24},
+    {id: 'correct2', title: 'Get 2 correct', current: metrics.correct, target: 2, xp: 30},
+    {id: 'like1', title: 'Save a useful clip', current: metrics.likes, target: 1, xp: 10}
+  ];
+}
+
+function grantMissionRewards(state) {
+  const today = dateKey();
+  const earned = [];
+  buildMissions(state).forEach((mission) => {
+    const key = `${today}:${mission.id}`;
+    if (mission.current >= mission.target && !state.rewards[key]) {
+      state.rewards[key] = true;
+      state.xp += mission.xp;
+      earned.push(`${mission.title} +${mission.xp} XP`);
+    }
+  });
+  const metrics = todayMetrics(state);
+  const goalKey = `${today}:daily-goal`;
+  if (metrics.completed >= DAILY_GOAL && !state.rewards[goalKey]) {
+    state.rewards[goalKey] = true;
+    state.xp += 50;
+    earned.push(`Daily goal +50 XP`);
+  }
+  return earned;
+}
+
+function renderLearn() {
+  const feedTrack = $('feedTrack');
+  const feedViewport = $('feedViewport');
+  if (!feedTrack || !feedViewport) return;
+
+  const data = window.LEARN_VIDEO_DATA || {items: []};
+  const sourceItems = Array.isArray(data.items) ? data.items.filter((item) => item.videoUrl) : [];
+  if (!sourceItems.length) {
+    feedTrack.innerHTML = '<article class="feed-slide feed-empty"><h1>Practice clips are being prepared.</h1></article>';
+    return;
   }
 
-  function updateSummary() {
-    const answered = items.filter((item) => progress[item.id]).length;
-    setText('answeredCount', answered);
-    setText('lessonCount', items.length);
-    setText('practiceMode', 'Quiz');
+  let state = readShortsState();
+  const deviceProfile = getDeviceProfile(state);
+  const orderedItems = rankShorts(sourceItems, state, deviceProfile);
+  const hashId = decodeURIComponent(window.location.hash.replace('#', ''));
+  let activeIndex = Math.max(0, orderedItems.findIndex((item) => item.id === (hashId || state.activeId)));
+  let activeQuizId = '';
+  let toastTimer = 0;
+  let preloadCursor = 0;
+  const coverPreloads = new Set();
+
+  function itemNumber(item) {
+    return Math.max(sourceItems.findIndex((candidate) => candidate.id === item?.id) + 1, 1);
   }
 
-  function renderLessonList() {
-    if (!list) return;
-    list.innerHTML = filteredItems.map((item) => {
-      const done = progress[item.id];
-      const number = lessonNumber(item);
-      return `<button class="lesson-row ${item.id === currentId ? 'is-active' : ''}" type="button" data-id="${escapeHtml(item.id)}"><span><strong>${number}</strong><em>${escapeHtml(cleanLessonTitle(item))}</em></span><small>${escapeHtml(voiceLabel(item))} · ${formatDuration(item.durationSeconds)}${done ? ' · completed' : ''}</small></button>`;
-    }).join('') || '<p class="inline-note">No matching lessons.</p>';
+  function baseCount(item, salt, minimum) {
+    return minimum + (hashString(`${item.id}:${salt}`) % 900);
   }
 
-  function renderQuiz(item) {
-    setText('quizQuestion', item?.prompt || 'Question');
-    const answers = $('quizAnswers');
-    const feedback = $('quizFeedback');
-    if (!answers || !item) return;
-    const selected = progress[item.id]?.selected;
-    answers.innerHTML = item.answers.map((answer, index) => {
-      const isSelected = selected === index;
-      const isCorrect = item.correctIndex === index;
-      const state = selected === undefined ? '' : isCorrect ? 'is-correct' : isSelected ? 'is-wrong' : '';
-      return `<button class="answer-option ${state}" type="button" data-answer="${index}"><span>${String.fromCharCode(65 + index)}</span>${escapeHtml(answer)}</button>`;
+  function slides() {
+    return Array.from(feedTrack.querySelectorAll('.feed-slide'));
+  }
+
+  function slideAt(index) {
+    return feedTrack.querySelector(`.feed-slide[data-index="${index}"]`);
+  }
+
+  function activeItem() {
+    return orderedItems[activeIndex] || orderedItems[0];
+  }
+
+  function showToast(message) {
+    const toast = $('shortsToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.hidden = false;
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => { toast.hidden = true; }, 2200);
+  }
+
+  function showMilestone(title, body) {
+    setText('milestoneTitle', title);
+    setText('milestoneBody', body);
+    const modal = $('milestoneModal');
+    if (modal) modal.hidden = false;
+  }
+
+  function addXp(amount) {
+    state.xp = Math.max(0, (Number(state.xp) || 0) + amount);
+  }
+
+  function rewardFeedback(defaultMessage, rewards) {
+    if (rewards.length) showMilestone('Mission complete', rewards.join('  '));
+    else if ($('quizSheet')?.hidden !== false) showToast(defaultMessage);
+  }
+
+  function renderFeed() {
+    feedTrack.innerHTML = orderedItems.map((item, index) => {
+      const liked = Boolean(state.likes[item.id]);
+      const saved = Boolean(state.favorites[item.id]);
+      const answered = state.answers[item.id];
+      const completed = Boolean(state.completed[item.id]);
+      const lesson = String(itemNumber(item)).padStart(2, '0');
+      const likeCount = baseCount(item, 'likes', 120) + (liked ? 1 : 0);
+      const saveCount = baseCount(item, 'saves', 35) + (saved ? 1 : 0);
+      return `<article class="feed-slide ${index === activeIndex ? 'is-active' : ''}" data-id="${escapeHtml(item.id)}" data-index="${index}">
+        <video class="feed-video" playsinline loop muted preload="none" poster="${escapeHtml(item.coverUrl || '')}"></video>
+        <div class="feed-shade"></div>
+        <div class="feed-loader">Loading clip</div>
+        <div class="feed-error">This clip is unavailable right now.</div>
+        <div class="feed-progress"><span data-progress></span></div>
+        <div class="feed-copy">
+          <div class="feed-meta"><span>${lesson}</span><span>${escapeHtml(voiceLabel(item))}</span><span>${formatDuration(item.durationSeconds)}</span></div>
+          <h1>${escapeHtml(cleanLessonTitle(item))}</h1>
+          <p class="caption-line ${state.captions ? '' : 'is-hidden'}">${escapeHtml(item.prompt || '')}</p>
+          <button class="quiz-chip ${answered ? 'is-done' : ''}" type="button" data-action="quiz">${answered ? 'Checked' : 'Quick check'}${completed ? ' · watched' : ''}</button>
+        </div>
+        <div class="action-rail">
+          <button class="rail-button ${liked ? 'is-active' : ''}" type="button" data-action="like" aria-label="Like clip"><span aria-hidden="true">${liked ? '♥' : '♡'}</span><small>${compactCount(likeCount)}</small></button>
+          <button class="rail-button ${saved ? 'is-active' : ''}" type="button" data-action="save" aria-label="Save clip"><span aria-hidden="true">${saved ? '★' : '☆'}</span><small>${compactCount(saveCount)}</small></button>
+          <button class="rail-button" type="button" data-action="share" aria-label="Share clip"><span aria-hidden="true">↗</span><small>Share</small></button>
+          <button class="rail-button ${answered ? 'is-active' : ''}" type="button" data-action="quiz" aria-label="Open quiz"><span aria-hidden="true">?</span><small>Quiz</small></button>
+        </div>
+        <div class="bottom-menu">
+          <button class="${state.captions ? 'is-on' : ''}" type="button" data-action="captions" aria-label="Toggle captions">CC</button>
+          <button type="button" data-action="rate" aria-label="Change speed">${state.rate}x</button>
+          <button type="button" data-action="mute" aria-label="Toggle sound">${state.muted ? 'Muted' : 'Sound'}</button>
+          <button type="button" data-action="next" aria-label="Next clip">Next</button>
+        </div>
+        <div class="pause-indicator" hidden>Paused</div>
+      </article>`;
+    }).join('');
+  }
+
+  function ensureCover(item) {
+    if (!item?.coverUrl || coverPreloads.has(item.coverUrl)) return;
+    coverPreloads.add(item.coverUrl);
+    const image = new Image();
+    image.src = item.coverUrl;
+  }
+
+  function ensureVideoLoaded(index, preload = 'metadata') {
+    const item = orderedItems[index];
+    const slide = slideAt(index);
+    if (!item || !slide) return;
+    ensureCover(item);
+    const video = slide.querySelector('video');
+    if (!video || video.dataset.loaded) return;
+    video.dataset.loaded = 'true';
+    video.preload = preload;
+    video.src = item.videoUrl;
+    video.poster = item.coverUrl || '';
+    video.muted = state.muted;
+    video.playbackRate = state.rate;
+    video.load();
+  }
+
+  function preloadAround(index) {
+    [-1, 0, 1, 2, 3].forEach((offset, order) => {
+      window.setTimeout(() => ensureVideoLoaded(index + offset, offset <= 1 ? 'auto' : 'metadata'), order * 180);
+    });
+  }
+
+  function startBackgroundPreload() {
+    const interval = deviceProfile.slowConnection ? 2600 : 1300;
+    const timer = window.setInterval(() => {
+      if (preloadCursor >= orderedItems.length) {
+        window.clearInterval(timer);
+        return;
+      }
+      ensureVideoLoaded(preloadCursor, preloadCursor <= activeIndex + 2 ? 'auto' : 'metadata');
+      preloadCursor += 1;
+    }, interval);
+  }
+
+  function pauseInactiveVideos() {
+    slides().forEach((slide, index) => {
+      const video = slide.querySelector('video');
+      if (video && index !== activeIndex) video.pause();
+      slide.classList.toggle('is-active', index === activeIndex);
+    });
+  }
+
+  function playActiveVideo() {
+    const slide = slideAt(activeIndex);
+    const video = slide?.querySelector('video');
+    if (!slide || !video || document.hidden) return;
+    ensureVideoLoaded(activeIndex, 'auto');
+    video.muted = state.muted;
+    video.playbackRate = state.rate;
+    const pause = slide.querySelector('.pause-indicator');
+    slide.classList.add('is-loading');
+    video.play().then(() => {
+      slide.classList.remove('is-paused');
+      if (pause) pause.hidden = true;
+    }).catch(() => {
+      slide.classList.add('is-paused');
+      if (pause) pause.hidden = false;
+    });
+  }
+
+  function setActiveIndex(index, options = {}) {
+    const nextIndex = Math.min(Math.max(index, 0), orderedItems.length - 1);
+    activeIndex = nextIndex;
+    state.activeId = orderedItems[activeIndex]?.id || '';
+    writeShortsState(state);
+    pauseInactiveVideos();
+    preloadAround(activeIndex);
+    playActiveVideo();
+    renderDashboard();
+    updateControls();
+    if (options.updateHash && state.activeId) history.replaceState(null, '', `#${encodeURIComponent(state.activeId)}`);
+  }
+
+  function scrollToIndex(index, behavior = 'smooth') {
+    const target = slideAt(index);
+    if (!target) return;
+    target.scrollIntoView({block: 'start', behavior});
+    setActiveIndex(index, {updateHash: true});
+  }
+
+  function moveFeed(delta) {
+    scrollToIndex(activeIndex + delta);
+  }
+
+  function updateControls() {
+    slides().forEach((slide, index) => {
+      const item = orderedItems[index];
+      if (!item) return;
+      const liked = Boolean(state.likes[item.id]);
+      const saved = Boolean(state.favorites[item.id]);
+      const answered = Boolean(state.answers[item.id]);
+      const completed = Boolean(state.completed[item.id]);
+      slide.querySelector('[data-action="like"]')?.classList.toggle('is-active', liked);
+      slide.querySelector('[data-action="save"]')?.classList.toggle('is-active', saved);
+      slide.querySelectorAll('[data-action="quiz"]').forEach((button) => button.classList.toggle('is-active', answered));
+      const chip = slide.querySelector('.quiz-chip');
+      if (chip) {
+        chip.classList.toggle('is-done', answered);
+        chip.textContent = `${answered ? 'Checked' : 'Quick check'}${completed ? ' · watched' : ''}`;
+      }
+      slide.querySelectorAll('[data-action="captions"]').forEach((button) => button.classList.toggle('is-on', state.captions));
+      slide.querySelectorAll('[data-action="rate"]').forEach((button) => { button.textContent = `${state.rate}x`; });
+      slide.querySelectorAll('[data-action="mute"]').forEach((button) => { button.textContent = state.muted ? 'Muted' : 'Sound'; });
+      slide.querySelectorAll('.caption-line').forEach((caption) => caption.classList.toggle('is-hidden', !state.captions));
+      const video = slide.querySelector('video');
+      if (video) {
+        video.muted = state.muted;
+        video.playbackRate = state.rate;
+      }
+    });
+  }
+
+  function renderDashboard() {
+    const metrics = todayMetrics(state);
+    setText('shortsXp', compactCount(state.xp));
+    setText('shortsStreak', state.streak);
+    setText('dailyGoalText', `${Math.min(metrics.completed, DAILY_GOAL)} / ${DAILY_GOAL}`);
+    setText('dailyGoalLabel', metrics.completed >= DAILY_GOAL ? 'goal complete' : 'clips today');
+    const dailyGoalBar = $('dailyGoalBar');
+    if (dailyGoalBar) dailyGoalBar.style.width = `${Math.min(100, (metrics.completed / DAILY_GOAL) * 100)}%`;
+
+    const missions = buildMissions(state);
+    const completeCount = missions.filter((mission) => mission.current >= mission.target).length;
+    setText('missionSummary', `${completeCount} / ${missions.length}`);
+    const missionList = $('missionList');
+    if (missionList) {
+      missionList.innerHTML = missions.map((mission) => {
+        const current = Math.min(mission.current, mission.target);
+        const percent = Math.min(100, (current / mission.target) * 100);
+        return `<div class="mission-row ${current >= mission.target ? 'is-done' : ''}">
+          <div><strong>${escapeHtml(mission.title)}</strong><small>+${mission.xp} XP</small></div>
+          <span>${current} / ${mission.target}</span>
+          <div class="mission-bar"><i style="width:${percent}%"></i></div>
+        </div>`;
+      }).join('');
+    }
+
+    const rank = state.xp >= 500 ? 'Gold' : state.xp >= 220 ? 'Silver' : state.xp >= 80 ? 'Bronze' : 'Rising';
+    setText('rankLabel', rank);
+    const leaderboard = [
+      {name: 'Mariam', xp: 430},
+      {name: 'Omar', xp: 315},
+      {name: 'You', xp: state.xp, you: true},
+      {name: 'Noura', xp: 140},
+      {name: 'Ali', xp: 80}
+    ].sort((a, b) => b.xp - a.xp);
+    const leaderboardList = $('leaderboardList');
+    if (leaderboardList) {
+      leaderboardList.innerHTML = leaderboard.map((entry, index) => `<div class="rank-row ${entry.you ? 'is-you' : ''}">
+        <span>${index + 1}</span><strong>${escapeHtml(entry.name)}</strong><small>${compactCount(entry.xp)} XP</small>
+      </div>`).join('');
+    }
+
+    const queueList = $('queueList');
+    if (queueList) {
+      const nextItems = orderedItems.slice(activeIndex, activeIndex + 6);
+      queueList.innerHTML = nextItems.map((item) => {
+        const index = orderedItems.findIndex((candidate) => candidate.id === item.id);
+        return `<button class="queue-row ${index === activeIndex ? 'is-active' : ''}" type="button" data-index="${index}">
+          <span>${String(itemNumber(item)).padStart(2, '0')}</span>
+          <strong>${escapeHtml(cleanLessonTitle(item))}</strong>
+          <small>${escapeHtml(voiceLabel(item))}</small>
+        </button>`;
+      }).join('');
+    }
+  }
+
+  function markWatched(item) {
+    if (!item || state.completed[item.id]) return;
+    touchLearningDay(state);
+    state.completed[item.id] = {date: dateKey(), at: Date.now()};
+    addXp(6);
+    const rewards = grantMissionRewards(state);
+    writeShortsState(state);
+    renderDashboard();
+    updateControls();
+    rewardFeedback('Clip complete +6 XP', rewards);
+  }
+
+  function handleTimeUpdate(index, video) {
+    const item = orderedItems[index];
+    const slide = slideAt(index);
+    if (!item || !slide || !video.duration) return;
+    const progress = Math.min(1, video.currentTime / video.duration);
+    const bar = slide.querySelector('[data-progress]');
+    if (bar) bar.style.width = `${progress * 100}%`;
+    if (progress > 0.62) markWatched(item);
+  }
+
+  function renderQuizSheet() {
+    const item = orderedItems.find((candidate) => candidate.id === activeQuizId) || activeItem();
+    if (!item) return;
+    activeQuizId = item.id;
+    const record = state.answers[item.id];
+    setText('quizSheetTitle', cleanLessonTitle(item));
+    setText('quizSheetPrompt', item.prompt || 'Choose the best answer.');
+    const answers = $('quizSheetAnswers');
+    const feedback = $('quizSheetFeedback');
+    if (!answers) return;
+    answers.innerHTML = (item.answers || []).map((answer, index) => {
+      const selected = record?.selected === index;
+      const correct = Number(item.correctIndex) === index;
+      const stateClass = record ? (correct ? 'is-correct' : selected ? 'is-wrong' : '') : '';
+      return `<button class="answer-option ${stateClass}" type="button" data-answer="${index}" ${record ? 'disabled' : ''}><span>${String.fromCharCode(65 + index)}</span>${escapeHtml(answer)}</button>`;
     }).join('');
     if (feedback) {
-      if (selected === undefined) feedback.textContent = '';
-      else feedback.textContent = selected === item.correctIndex ? 'Correct. Ready for the next lesson.' : `Good try. The correct answer is ${String.fromCharCode(65 + item.correctIndex)}.`;
+      if (!record) feedback.textContent = '';
+      else feedback.textContent = record.correct ? 'Correct. Nice work.' : `Good try. The answer is ${String.fromCharCode(65 + Number(item.correctIndex))}.`;
     }
   }
 
-  function renderPlayer() {
-    const item = selectedItem();
+  function openQuiz(item = activeItem()) {
     if (!item) return;
-    currentId = item.id;
-    setText('lessonTrack', item.track);
-    setText('lessonTitle', `Lesson ${lessonNumber(item)}`);
-    setText('lessonMeta', `${cleanLessonTitle(item)} · ${voiceLabel(item)} · ${formatDuration(item.durationSeconds)}`);
-    if (item.videoUrl) {
-      if (video.src !== item.videoUrl) {
-        video.src = item.videoUrl;
-        video.poster = item.coverUrl || '';
-        video.load();
-      }
-      if (fallback) fallback.hidden = true;
-    } else if (fallback) {
-      fallback.hidden = false;
+    activeQuizId = item.id;
+    renderQuizSheet();
+    const sheet = $('quizSheet');
+    if (sheet) sheet.hidden = false;
+  }
+
+  function closeQuiz() {
+    const sheet = $('quizSheet');
+    if (sheet) sheet.hidden = true;
+  }
+
+  function answerQuiz(index) {
+    const item = orderedItems.find((candidate) => candidate.id === activeQuizId) || activeItem();
+    if (!item || state.answers[item.id]) return;
+    const correct = Number(index) === Number(item.correctIndex);
+    touchLearningDay(state);
+    state.answers[item.id] = {selected: Number(index), correct, date: dateKey(), at: Date.now()};
+    addXp(correct ? 12 : 4);
+    const rewards = grantMissionRewards(state);
+    writeShortsState(state);
+    renderQuizSheet();
+    renderDashboard();
+    updateControls();
+    rewardFeedback(correct ? 'Correct +12 XP' : 'Answered +4 XP', rewards);
+  }
+
+  async function shareItem(item) {
+    const url = `${window.location.origin}${window.location.pathname}#${encodeURIComponent(item.id)}`;
+    const shareData = {title: 'YepZan Practice', text: cleanLessonTitle(item), url};
+    try {
+      if (navigator.share) await navigator.share(shareData);
+      else if (navigator.clipboard) await navigator.clipboard.writeText(url);
+      showToast('Practice link ready');
+    } catch {
+      showToast('Share canceled');
     }
-    renderQuiz(item);
-    renderLessonList();
-    updateSummary();
   }
 
-  function move(delta) {
-    const index = filteredItems.findIndex((item) => item.id === currentId);
-    const nextIndex = Math.min(Math.max(index + delta, 0), filteredItems.length - 1);
-    currentId = filteredItems[nextIndex]?.id || currentId;
-    renderPlayer();
+  function handleAction(action, index) {
+    const item = orderedItems[index];
+    if (!item) return;
+    if (action === 'like') {
+      if (state.likes[item.id]) delete state.likes[item.id];
+      else state.likes[item.id] = {date: dateKey(), at: Date.now()};
+      const rewards = grantMissionRewards(state);
+      writeShortsState(state);
+      renderDashboard();
+      updateControls();
+      rewardFeedback(state.likes[item.id] ? 'Liked' : 'Like removed', rewards);
+      return;
+    }
+    if (action === 'save') {
+      const wasSaved = Boolean(state.favorites[item.id]);
+      if (wasSaved) delete state.favorites[item.id];
+      else {
+        touchLearningDay(state);
+        state.favorites[item.id] = {date: dateKey(), at: Date.now()};
+        addXp(2);
+      }
+      writeShortsState(state);
+      renderDashboard();
+      updateControls();
+      showToast(wasSaved ? 'Removed from review' : 'Saved for review +2 XP');
+      return;
+    }
+    if (action === 'share') {
+      shareItem(item);
+      return;
+    }
+    if (action === 'quiz') {
+      openQuiz(item);
+      return;
+    }
+    if (action === 'captions') {
+      state.captions = !state.captions;
+      writeShortsState(state);
+      updateControls();
+      return;
+    }
+    if (action === 'rate') {
+      const nextIndex = (RATE_STEPS.indexOf(state.rate) + 1) % RATE_STEPS.length;
+      state.rate = RATE_STEPS[nextIndex];
+      writeShortsState(state);
+      updateControls();
+      showToast(`${state.rate}x speed`);
+      return;
+    }
+    if (action === 'mute') {
+      state.muted = !state.muted;
+      writeShortsState(state);
+      updateControls();
+      playActiveVideo();
+      return;
+    }
+    if (action === 'next') moveFeed(1);
   }
 
-  $('prevLesson')?.addEventListener('click', () => move(-1));
-  $('nextLesson')?.addEventListener('click', () => move(1));
-  $('fallbackNext')?.addEventListener('click', () => move(1));
-  $('replayLesson')?.addEventListener('click', () => {
-    video.currentTime = 0;
-    video.play().catch(() => {});
+  renderFeed();
+  renderDashboard();
+  preloadAround(activeIndex);
+  startBackgroundPreload();
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (!visible || visible.intersectionRatio < 0.58) return;
+    const index = Number(visible.target.dataset.index);
+    if (Number.isFinite(index) && index !== activeIndex) setActiveIndex(index, {updateHash: true});
+  }, {root: feedViewport, threshold: [0.58, 0.72, 0.9]});
+
+  slides().forEach((slide, index) => {
+    observer.observe(slide);
+    const video = slide.querySelector('video');
+    video?.addEventListener('timeupdate', () => handleTimeUpdate(index, video));
+    video?.addEventListener('click', () => {
+      if (video.paused) {
+        video.play().catch(() => {});
+        slide.querySelector('.pause-indicator').hidden = true;
+      } else {
+        video.pause();
+        slide.querySelector('.pause-indicator').hidden = false;
+      }
+    });
+    video?.addEventListener('canplay', () => slide.classList.remove('is-loading'));
+    video?.addEventListener('error', () => slide.classList.add('has-error'));
   });
-  list?.addEventListener('click', (event) => {
-    const row = event.target.closest('.lesson-row');
-    if (!row) return;
-    currentId = row.dataset.id;
-    renderPlayer();
+
+  feedTrack.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-action]');
+    if (!button) return;
+    const slide = button.closest('.feed-slide');
+    handleAction(button.dataset.action, Number(slide?.dataset.index));
   });
-  $('quizAnswers')?.addEventListener('click', (event) => {
+
+  $('queueList')?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-index]');
+    if (button) scrollToIndex(Number(button.dataset.index));
+  });
+
+  $('quizSheetAnswers')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-answer]');
-    const item = selectedItem();
-    if (!button || !item) return;
-    const selected = Number(button.dataset.answer);
-    progress[item.id] = { selected, correct: selected === item.correctIndex };
-    writeProgress(progress);
-    renderQuiz(item);
-    renderLessonList();
-    updateSummary();
+    if (button) answerQuiz(Number(button.dataset.answer));
   });
-  search?.addEventListener('input', () => { refreshFiltered(); renderPlayer(); });
-  voiceFilter?.addEventListener('change', () => { refreshFiltered(); renderPlayer(); });
-  video.addEventListener('error', () => { if (fallback) fallback.hidden = false; });
 
-  refreshFiltered();
-  renderPlayer();
+  $('closeQuiz')?.addEventListener('click', closeQuiz);
+  $('closeMilestone')?.addEventListener('click', () => { const modal = $('milestoneModal'); if (modal) modal.hidden = true; });
+  $('milestoneModal')?.addEventListener('click', (event) => {
+    if (event.target.id === 'milestoneModal') event.currentTarget.hidden = true;
+  });
+  $('quizSheet')?.addEventListener('click', (event) => {
+    if (event.target.id === 'quizSheet') closeQuiz();
+  });
+  $('taskToggle')?.addEventListener('click', () => {
+    const dashboard = $('learnDashboard');
+    const isOpen = dashboard?.classList.toggle('is-open') || false;
+    $('taskToggle')?.classList.toggle('is-active', isOpen);
+    $('feedTab')?.classList.toggle('is-active', !isOpen);
+  });
+  $('feedTab')?.addEventListener('click', () => {
+    $('learnDashboard')?.classList.remove('is-open');
+    $('taskToggle')?.classList.remove('is-active');
+    $('feedTab')?.classList.add('is-active');
+  });
+
+  feedViewport.addEventListener('keydown', (event) => {
+    if (['ArrowDown', 'PageDown'].includes(event.key)) {
+      event.preventDefault();
+      moveFeed(1);
+    }
+    if (['ArrowUp', 'PageUp'].includes(event.key)) {
+      event.preventDefault();
+      moveFeed(-1);
+    }
+    if (event.key === ' ') {
+      event.preventDefault();
+      const video = slideAt(activeIndex)?.querySelector('video');
+      video?.click();
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) slides().forEach((slide) => slide.querySelector('video')?.pause());
+    else playActiveVideo();
+  });
+
+  window.setTimeout(() => {
+    scrollToIndex(activeIndex, 'auto');
+    feedViewport.focus({preventScroll: true});
+  }, 80);
 }
 
 renderHome();

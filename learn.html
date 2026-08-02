@@ -40,69 +40,89 @@
     </div>
   </header>
 
-  <main>
-    <section class="section learn-app">
-      <div class="container learn-layout">
-        <div class="learn-stage">
-          <div class="phone-frame">
-            <video id="lessonVideo" class="lesson-video" controls playsinline preload="metadata"></video>
-            <div id="videoFallback" class="video-fallback" hidden>
-              <strong>This lesson is taking a moment to load.</strong>
-              <button id="fallbackNext" class="button button-primary" type="button">Try the next lesson</button>
-            </div>
-          </div>
-          <div class="lesson-caption">
-            <span id="lessonTrack" class="success-pill">English for Arabic speakers</span>
-            <h1 id="lessonTitle">Short-video lesson</h1>
-            <p id="lessonMeta">Watch, answer, and move to the next clip.</p>
-            <div class="hero-actions">
-              <button id="prevLesson" class="button button-secondary" type="button">Previous</button>
-              <button id="replayLesson" class="button button-secondary" type="button">Replay</button>
-              <button id="nextLesson" class="button button-primary" type="button">Next lesson</button>
-            </div>
+  <main class="shorts-app">
+    <section class="shorts-shell" aria-label="Short-video language practice">
+      <div class="shorts-topbar">
+        <div class="shorts-channel">
+          <span class="live-dot" aria-hidden="true"></span>
+          <strong>YepZan Practice</strong>
+        </div>
+        <div class="feed-tabs" role="tablist" aria-label="Practice feed">
+          <button id="feedTab" class="is-active" type="button">For You</button>
+          <button id="taskToggle" type="button">Tasks</button>
+        </div>
+        <div class="shorts-score" aria-label="Learning progress">
+          <span><small>XP</small><strong id="shortsXp">0</strong></span>
+          <span><small>Streak</small><strong id="shortsStreak">0</strong></span>
+        </div>
+      </div>
+
+      <div class="shorts-main">
+        <div class="feed-device">
+          <div id="feedViewport" class="feed-viewport" tabindex="0" aria-label="Short-video practice feed">
+            <div id="feedTrack" class="feed-track"></div>
           </div>
         </div>
 
-        <aside class="learn-side" aria-label="Video learning controls">
-          <div class="learn-summary">
-            <div>
-              <small>Completed</small>
-              <strong id="answeredCount">0</strong>
+        <aside id="learnDashboard" class="learning-dashboard" aria-label="Learning dashboard">
+          <div class="dashboard-card dashboard-hero">
+            <span class="dashboard-kicker">Daily goal</span>
+            <div class="daily-goal">
+              <strong id="dailyGoalText">0 / 5</strong>
+              <span id="dailyGoalLabel">clips today</span>
             </div>
-            <div>
-              <small>Lessons</small>
-              <strong id="lessonCount">0</strong>
-            </div>
-            <div>
-              <small>Mode</small>
-              <strong id="practiceMode">Quiz</strong>
-            </div>
+            <div class="goal-bar"><span id="dailyGoalBar"></span></div>
           </div>
 
-          <div class="quiz-block">
-            <span class="eyebrow">Quiz</span>
-            <h2 id="quizQuestion">Question</h2>
-            <div id="quizAnswers" class="answer-grid"></div>
-            <p id="quizFeedback" class="quiz-feedback" aria-live="polite"></p>
+          <div class="dashboard-card">
+            <div class="dashboard-head">
+              <span class="dashboard-kicker">Missions</span>
+              <strong id="missionSummary">0 ready</strong>
+            </div>
+            <div id="missionList" class="mission-list"></div>
           </div>
 
-          <div class="lesson-list-shell">
-            <div class="panel-head panel-head-tight">
-              <span class="eyebrow">Lessons</span>
-              <p id="videoDataNote">Pick a clip or continue in order.</p>
+          <div class="dashboard-card">
+            <div class="dashboard-head">
+              <span class="dashboard-kicker">Learning rank</span>
+              <strong id="rankLabel">Rising</strong>
             </div>
-            <div class="lesson-filters">
-              <input id="lessonSearch" type="search" placeholder="Search topics" />
-              <select id="voiceFilter" aria-label="Voice filter">
-                <option value="all">All clips</option>
-                <option value="Pure English">English only</option>
-                <option value="Mixed">With Arabic support</option>
-              </select>
+            <div id="leaderboardList" class="leaderboard-list"></div>
+          </div>
+
+          <div class="dashboard-card">
+            <div class="dashboard-head">
+              <span class="dashboard-kicker">Next clips</span>
+              <strong id="queueLabel">Recommended</strong>
             </div>
-            <div id="lessonList" class="lesson-list"></div>
+            <div id="queueList" class="queue-list"></div>
           </div>
         </aside>
       </div>
+
+      <div id="quizSheet" class="quiz-sheet" hidden aria-live="polite">
+        <div class="quiz-sheet-card" role="dialog" aria-modal="true" aria-labelledby="quizSheetTitle">
+          <div class="quiz-sheet-head">
+            <span class="dashboard-kicker">Quick check</span>
+            <button id="closeQuiz" class="icon-button" type="button" aria-label="Close quiz">x</button>
+          </div>
+          <h2 id="quizSheetTitle">Question</h2>
+          <p id="quizSheetPrompt"></p>
+          <div id="quizSheetAnswers" class="answer-grid"></div>
+          <p id="quizSheetFeedback" class="quiz-feedback"></p>
+        </div>
+      </div>
+
+      <div id="milestoneModal" class="milestone-modal" hidden>
+        <div class="milestone-card" role="dialog" aria-modal="true" aria-labelledby="milestoneTitle">
+          <span class="milestone-badge">Level up</span>
+          <h2 id="milestoneTitle">Mission complete</h2>
+          <p id="milestoneBody"></p>
+          <button id="closeMilestone" class="button button-primary" type="button">Continue</button>
+        </div>
+      </div>
+
+      <div id="shortsToast" class="shorts-toast" hidden></div>
     </section>
   </main>
 
