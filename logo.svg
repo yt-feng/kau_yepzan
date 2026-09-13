@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">tiktalk academy</title>
+  <desc id="logoDesc">A rounded play mark with a speech bubble tail.</desc>
+  <defs>
+    <linearGradient id="logoGradient" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8c52ff" />
+      <stop offset="0.55" stop-color="#00d5ff" />
+      <stop offset="1" stop-color="#31d6a3" />
+    </linearGradient>
+  </defs>
+  <path d="M32 4c15.464 0 28 10.745 28 24S47.464 52 32 52c-3.1 0-6.09-.43-8.86-1.22L12 59l2.95-11.4C8.2 43.05 4 36.13 4 28 4 14.745 16.536 4 32 4Z" fill="url(#logoGradient)" />
+  <path d="m27 18 15 10-15 10V18Z" fill="#fff" />
+  <circle cx="19" cy="28" r="2.5" fill="#fff" opacity=".9" />
+</svg>

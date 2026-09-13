@@ -6,18 +6,16 @@
   <title>Short videos | tiktalk academy</title>
   <meta name="description" content="Practice language from short videos with quick quizzes on tiktalk academy." />
   <meta name="theme-color" content="#050816" />
-  <link rel="stylesheet" href="./styles.css?v=20260913-frontend" />
-  <script defer src="./translations.js?v=20260913-frontend"></script>
+  <link rel="stylesheet" href="./styles.css?v=20260913-polish" />
+  <script defer src="./translations.js?v=20260913-polish"></script>
   <script defer src="./video-data.js"></script>
-  <script defer src="./main.js?v=20260913-frontend"></script>
+  <script defer src="./main.js?v=20260913-polish"></script>
+  <link rel="icon" type="image/svg+xml" href="./logo.svg" />
 </head>
 <body data-page="learn">
   <header class="site-header">
     <div class="container nav-shell">
-      <a class="brand" href="index.html">
-        <strong id="brandName">tiktalk academy</strong>
-        <span id="brandTagline">Learn language from tiktalk short videos</span>
-      </a>
+      <a class="brand" href="index.html"><img class="brand-mark" src="./logo.svg" alt="" aria-hidden="true"><span class="brand-copy"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></span></a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -67,7 +65,7 @@
 
         <aside id="learnDashboard" class="learning-dashboard" aria-label="Learning dashboard">
           <div class="dashboard-card dashboard-hero">
-            <span class="dashboard-kicker">Daily goal</span>
+            <span class="dashboard-kicker" id="dailyGoalKicker">Daily goal</span>
             <div class="daily-goal">
               <strong id="dailyGoalText">0 / 5</strong>
               <span id="dailyGoalLabel">clips today</span>
@@ -77,7 +75,7 @@
 
           <div class="dashboard-card">
             <div class="dashboard-head">
-              <span class="dashboard-kicker">Missions</span>
+            <span class="dashboard-kicker" id="missionsKicker">Missions</span>
               <strong id="missionSummary">0 ready</strong>
             </div>
             <div id="missionList" class="mission-list"></div>
@@ -85,7 +83,7 @@
 
           <div class="dashboard-card">
             <div class="dashboard-head">
-              <span class="dashboard-kicker">Learning rank</span>
+              <span class="dashboard-kicker" id="rankKicker">Learning rank</span>
               <strong id="rankLabel">Rising</strong>
             </div>
             <div id="leaderboardList" class="leaderboard-list"></div>
@@ -93,7 +91,7 @@
 
           <div class="dashboard-card">
             <div class="dashboard-head">
-              <span class="dashboard-kicker">Next clips</span>
+              <span class="dashboard-kicker" id="nextClipsKicker">Next clips</span>
               <strong id="queueLabel">Recommended</strong>
             </div>
             <div id="queueList" class="queue-list"></div>
@@ -104,7 +102,7 @@
       <div id="quizSheet" class="quiz-sheet" hidden aria-live="polite">
         <div class="quiz-sheet-card" role="dialog" aria-modal="true" aria-labelledby="quizSheetTitle">
           <div class="quiz-sheet-head">
-            <span class="dashboard-kicker">Quick check</span>
+            <span class="dashboard-kicker" id="quickCheckKicker">Quick check</span>
             <button id="closeQuiz" class="icon-button" type="button" aria-label="Close quiz">x</button>
           </div>
           <h2 id="quizSheetTitle">Question</h2>
@@ -116,7 +114,7 @@
 
       <div id="milestoneModal" class="milestone-modal" hidden>
         <div class="milestone-card" role="dialog" aria-modal="true" aria-labelledby="milestoneTitle">
-          <span class="milestone-badge">Level up</span>
+          <span class="milestone-badge" id="levelUpBadge">Level up</span>
           <h2 id="milestoneTitle">Mission complete</h2>
           <p id="milestoneBody"></p>
           <button id="closeMilestone" class="button button-primary" type="button">Continue</button>

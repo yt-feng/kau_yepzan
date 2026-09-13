@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Courses | tiktalk academy</title>
   <meta name="description" content="Browse tiktalk academy short-video learning and upcoming KAU language courses." />
-  <link rel="stylesheet" href="./styles.css?v=20260913-frontend" />
-  <script defer src="./translations.js?v=20260913-frontend"></script>
-  <script defer src="./main.js?v=20260913-frontend"></script>
+  <link rel="stylesheet" href="./styles.css?v=20260913-polish" />
+  <script defer src="./translations.js?v=20260913-polish"></script>
+  <script defer src="./main.js?v=20260913-polish"></script>
+  <link rel="icon" type="image/svg+xml" href="./logo.svg" />
 </head>
 <body data-page="products">
   <header class="site-header">
     <div class="container nav-shell">
-      <a class="brand" href="index.html"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></a>
+      <a class="brand" href="index.html"><img class="brand-mark" src="./logo.svg" alt="" aria-hidden="true"><span class="brand-copy"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></span></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
       <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
         <a id="navHome" href="index.html">Home</a>
@@ -45,11 +46,11 @@
     <section id="contact" class="section section-tight">
       <div class="container">
         <div class="final-card">
-          <h2>Need help choosing?</h2>
-          <p>Send your learning goal or project details and I will point you to the best next step.</p>
+          <h2 id="productsHelpTitle">Need help choosing?</h2>
+          <p id="productsHelpLead">Send your learning goal or project details and I will point you to the best next step.</p>
           <div class="hero-actions">
-          <a class="button button-primary" href="mailto:info@tiktalk.ac">Email tiktalk academy</a>
-            <a class="button button-secondary" href="order.html?product=bundle">Send inquiry</a>
+          <a id="productsEmailButton" class="button button-primary" href="mailto:info@tiktalk.ac">Email tiktalk academy</a>
+            <a id="productsInquiryButton" class="button button-secondary" href="order.html?product=bundle">Send inquiry</a>
           </div>
         </div>
       </div>
@@ -59,7 +60,7 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-panel"><p id="footerNote"></p></div>
-      <div class="footer-panel"><div class="footer-links"><div><small id="footerEmailLabel">Email</small><a href="mailto:info@tiktalk.ac">info@tiktalk.ac</a></div><small>© <span id="year"></span> tiktalk academy</small><div class="policy-links"><a href="terms.html">Terms</a><a href="refund.html">Refunds</a><a href="privacy.html">Privacy</a></div></div></div>
+      <div class="footer-panel"><div class="footer-links"><div><small id="footerEmailLabel">Email</small><a href="mailto:info@tiktalk.ac">info@tiktalk.ac</a></div><div><small>WhatsApp</small><a href="https://wa.me/8618717802869" target="_blank" rel="noreferrer" aria-label="Chat with tiktalk academy on WhatsApp">WhatsApp</a></div><small>© <span id="year"></span> tiktalk academy</small><div class="policy-links"><a href="terms.html">Terms</a><a href="refund.html">Refunds</a><a href="privacy.html">Privacy</a></div></div></div>
     </div>
   </footer>
 </body>
