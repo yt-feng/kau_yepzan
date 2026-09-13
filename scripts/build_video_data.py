@@ -125,7 +125,7 @@ def clean_title(record, fallback):
 
 def fetch_json(url, timeout=10, retries=1):
     headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; YepZanVideoBuilder/1.0)",
+        "User-Agent": "Mozilla/5.0 (compatible; TiktalkAcademyVideoBuilder/1.0)",
         "Accept": "application/json,text/plain,*/*",
     }
     curl = shutil.which("curl")
@@ -278,7 +278,7 @@ def refresh_existing_item(item, lens_map=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Build static video lesson data from the YepZan spreadsheet and Zhihu APIs.")
+    parser = argparse.ArgumentParser(description="Build static video lesson data for tiktalk academy from the source spreadsheet and Zhihu APIs.")
     parser.add_argument("--source", default="docs/视频数据表格.xlsx")
     parser.add_argument("--output", default="video-data.js")
     parser.add_argument("--lens-map", default="docs/video-lens-map.json")

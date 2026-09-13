@@ -3,25 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inquiry | Yutong Feng</title>
+  <title>Checkout and inquiry | tiktalk academy</title>
+  <meta name="description" content="Choose a tiktalk academy course, prepare for Paddle checkout, or send an inquiry." />
   <link rel="stylesheet" href="./styles.css" />
   <script defer src="./translations.js"></script>
+  <script defer src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script defer src="./paddle-config.js"></script>
+  <script defer src="./paddle.js"></script>
   <script defer src="./main.js"></script>
 </head>
 <body data-page="checkout">
   <header class="site-header">
     <div class="container nav-shell">
-      <a class="brand" href="index.html"><strong id="brandName">Yutong Feng</strong><span id="brandTagline">Language practice · Chinese courses</span></a>
+      <a class="brand" href="index.html"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
       <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
         <a id="navHome" href="index.html">Home</a>
-        <a id="navLearn" href="learn.html">Learn</a>
-        <a id="navProducts" href="products.html">Products</a>
-        <a id="navCheckout" href="order.html?product=bundle">Order</a>
+        <a id="navLearn" href="learn.html">Short videos</a>
+        <a id="navProducts" href="products.html">Courses</a>
+        <a id="navCheckout" href="order.html?product=bundle">Checkout</a>
         <a id="navContact" href="index.html#contact">Contact</a>
       </nav>
       <div class="lang-switch" aria-label="Language switcher">
-        <button class="lang-btn" type="button" data-lang="en">EN</button>
+        <label id="langLabel" for="lang-en">Language</label>
+        <button id="lang-en" class="lang-btn" type="button" data-lang="en">EN</button>
         <button class="lang-btn" type="button" data-lang="zh">中</button>
         <button class="lang-btn" type="button" data-lang="ar">AR</button>
       </div>
@@ -31,23 +36,25 @@
     <section class="section page-hero">
       <div class="container checkout-layout">
         <div class="checkout-panel">
-          <span class="success-pill">Inquiry</span>
+          <span class="success-pill" id="checkoutEyebrow">Checkout & inquiry</span>
           <h2 id="checkoutTitle">Send an Inquiry</h2>
           <p id="checkoutLead">Choose a course or service and send a short email with your goal, deadline, or project details.</p>
           <div class="field-group"><label for="productSelect">Course or service</label><select id="productSelect" name="product"></select></div>
-          <div class="hero-actions"><a id="emailOrderLink" class="button button-primary" href="mailto:yt.feng@foxmail.com">Send inquiry</a><a class="button button-secondary" href="products.html">Back to courses</a></div>
+          <div class="hero-actions"><a id="emailOrderLink" class="button button-secondary" href="mailto:yt.feng@foxmail.com">Send inquiry</a><button id="paddleCheckoutButton" class="button button-primary is-disabled" type="button" disabled>Pay with Paddle</button><a class="button button-secondary" href="products.html">Back to courses</a></div>
+          <p id="paddleStatus" class="payment-status" role="status">Paddle checkout will be enabled after the course and price are configured.</p>
+          <p id="paymentNote" class="inline-note">Course content and access rules will be published with each KAU course release.</p>
         </div>
         <aside class="checkout-panel">
-          <span class="eyebrow">Summary</span>
+          <span class="eyebrow" id="summaryEyebrow">Summary</span>
           <div class="summary-box">
-            <div class="summary-line"><span>Selection</span><strong id="summaryProduct">-</strong></div>
-            <div class="summary-total"><span>Typical price</span><strong id="summaryTotal">-</strong></div>
+            <div class="summary-line"><span id="summarySelectionLabel">Selection</span><strong id="summaryProduct">-</strong></div>
+            <div class="summary-total"><span id="summaryPriceLabel">Typical price</span><strong id="summaryTotal">-</strong></div>
           </div>
           <p class="inline-note">Email: <a href="mailto:yt.feng@foxmail.com">yt.feng@foxmail.com</a></p>
         </aside>
       </div>
     </section>
   </main>
-  <footer class="footer"><div class="container"><small>© <span id="year"></span> Yutong Feng</small></div></footer>
+  <footer class="footer"><div class="container"><small>© <span id="year"></span> tiktalk academy · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="privacy.html">Privacy</a></small></div></footer>
 </body>
 </html>

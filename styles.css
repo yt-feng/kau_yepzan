@@ -62,6 +62,8 @@ img { display: block; max-width: 100%; }
 .hero-actions, .card-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.5rem; }
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0.78rem 1.15rem; border-radius: 999px; border: 1px solid var(--line-strong); transition: transform 0.15s ease, background 0.15s ease; }
 .button:hover { transform: translateY(-1px); }
+.button.is-disabled, .button[aria-disabled="true"] { cursor: not-allowed; opacity: 0.52; filter: saturate(0.45); }
+.button.is-disabled:hover, .button[aria-disabled="true"]:hover { transform: none; }
 .button-primary { color: #08101f; font-weight: 700; background: linear-gradient(135deg, var(--accent-2), #d1f8ff); border-color: transparent; }
 .button-secondary { background: rgba(255,255,255,0.03); color: var(--text); }
 .button-full { width: 100%; }
@@ -105,6 +107,17 @@ img { display: block; max-width: 100%; }
 .summary-line, .summary-total { display: flex; justify-content: space-between; gap: 1rem; }
 .summary-total { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font-weight: 700; color: var(--text); }
 .inline-note { font-size: 0.88rem; color: var(--muted); }
+.payment-status { min-height: 1.6rem; margin: 1rem 0 0; color: #ffe3a1; font-size: 0.92rem; }
+.policy-links { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.policy-links a { color: var(--muted); font-size: 0.86rem; }
+.policy-links a:hover, .policy-links a:focus-visible { color: var(--text); }
+.policy-shell { max-width: 860px; }
+.policy-card { padding: clamp(1.4rem, 4vw, 3rem); border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); }
+.policy-card h1 { margin: 0; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -0.04em; }
+.policy-card h2 { margin: 2rem 0 0.5rem; font-size: 1.25rem; }
+.policy-card p { color: var(--muted); }
+.policy-card a { color: var(--accent-2); text-decoration: underline; text-underline-offset: 0.2em; }
+.policy-meta { margin-top: 0.7rem; font-size: 0.9rem; }
 .success-pill { display: inline-flex; padding: 0.38rem 0.7rem; border-radius: 999px; background: rgba(33,199,135,0.16); color: #a6f1d2; border: 1px solid rgba(33,199,135,0.24); }
 .video-teaser {
   display: grid; grid-template-columns: 1fr 0.8fr; gap: 1.2rem; align-items: stretch;
