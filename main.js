@@ -1,4 +1,4 @@
-const EMAIL = 'yt.feng@foxmail.com';
+const EMAIL = 'info@tiktalk.ac';
 const COURSE_KEYS = ['chinese101', 'practice', 'bundle'];
 const PRODUCT_PAGE_KEYS = ['videoEnglish', ...COURSE_KEYS];
 const SERVICE_KEYS = ['translation', 'zoom'];

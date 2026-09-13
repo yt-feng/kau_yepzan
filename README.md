@@ -46,7 +46,7 @@ Paddle checkout is reserved for the digital course products. Translation and one
 
 ## Contact
 
-Use yt.feng@foxmail.com for customer questions, learning plans, and translation quotes.
+Use info@tiktalk.ac for customer questions, learning plans, and translation quotes.
 
 ## Deploy
 
