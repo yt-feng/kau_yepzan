@@ -107,7 +107,7 @@ img { display: block; max-width: 100%; }
 .summary-line, .summary-total { display: flex; justify-content: space-between; gap: 1rem; }
 .summary-total { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font-weight: 700; color: var(--text); }
 .inline-note { font-size: 0.88rem; color: var(--muted); }
-.payment-status { min-height: 1.6rem; margin: 1rem 0 0; color: #ffe3a1; font-size: 0.92rem; }
+.course-status { min-height: 1.6rem; margin: 1rem 0 0; color: #ffe3a1; font-size: 0.92rem; }
 .policy-links { display: flex; flex-wrap: wrap; gap: 0.8rem; }
 .policy-links a { color: var(--muted); font-size: 0.86rem; }
 .policy-links a:hover, .policy-links a:focus-visible { color: var(--text); }
