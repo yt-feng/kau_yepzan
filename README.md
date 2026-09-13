@@ -14,6 +14,7 @@ This repository contains the static site skeleton for:
 - index.html — landing page
 - learn.html — short-video learning module
 - products.html — course and learning-path catalog
+- services.html — separate inquiry-only translation and language support services
 - order.html — course selection, Paddle checkout placeholder, and inquiry fallback
 - checkout.html — legacy redirect kept for old links
 - terms.html, refund.html, privacy.html — public policy pages for learners and payment-provider review
@@ -40,6 +41,8 @@ Never put Paddle API keys or webhook secrets in this static repository. Course e
 ## Content release
 
 The KAU course cards are currently a public scaffold. Upload the final lesson files, learning outcomes, access rules, and prices before enabling the corresponding Paddle price IDs and live checkout.
+
+Paddle checkout is reserved for the digital course products. Translation and one-to-one support remain separate inquiry-based services and are not included in the Paddle catalog.
 
 ## Contact
 
