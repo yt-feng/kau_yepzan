@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tiktalk academy | Learn language from tiktalk short videos</title>
     <meta name="description" content="tiktalk academy helps learners build language habits through short videos, structured KAU courses, and guided practice." />
-    <meta name="theme-color" content="#050816" />
-    <link rel="stylesheet" href="./styles.css?v=20260913-polish" />
+    <meta name="theme-color" content="#f6f7f1" />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg?v=20260915-discovery" />
+    <link rel="stylesheet" href="./styles.css?v=20260915-discovery" />
+  <link rel="stylesheet" href="./experience.css?v=20260915-discovery" />
     <script defer src="./translations.js?v=20260913-polish"></script>
-    <script defer src="./main.js?v=20260913-polish"></script>
+  <script defer src="./experience.js?v=20260915-discovery"></script>
+  <script defer src="./learning-core.js?v=20260915-discovery"></script>
+    <script defer src="./main.js?v=20260915-discovery"></script>
   </head>
   <body data-page="home">
     <header class="site-header">
       <div class="container nav-shell">
-        <a class="brand" href="index.html"><img class="brand-mark" src="./logo.svg" alt="" aria-hidden="true"><span class="brand-copy"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></span></a>
+        <a class="brand" href="index.html"><img class="brand-mark" src="./logo.svg?v=20260915-discovery" alt="" aria-hidden="true"><span class="brand-copy"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></span></a>
 
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
           <span></span><span></span><span></span>
@@ -24,12 +28,12 @@
           <a id="navLearn" href="learn.html">Short videos</a>
           <a id="navProducts" href="products.html">Courses</a>
           <a id="navServices" href="services.html">Services</a>
-          <a id="navCheckout" href="order.html?product=bundle">Get started</a>
+          <a id="navCheckout" href="learn.html">Start free</a>
           <a id="navContact" href="#contact">Contact</a>
         </nav>
 
         <div class="lang-switch" aria-label="Language switcher">
-          <label id="langLabel" for="lang-en">Language</label>
+          <span id="langLabel">Language</span>
           <button id="lang-en" class="lang-btn" type="button" data-lang="en">EN</button>
           <button class="lang-btn" type="button" data-lang="zh">中</button>
           <button class="lang-btn" type="button" data-lang="ar">AR</button>
@@ -37,81 +41,9 @@
       </div>
     </header>
 
-    <main>
-      <section class="section">
-        <div class="container hero-grid">
-          <div id="heroMount"></div>
-        </div>
-      </section>
+    <main id="discoveryHome"><noscript><div class="container section"><h1>One more video. One more thing you can say.</h1><p>Enable JavaScript to personalize your English practice.</p><a class="button" href="learn.html">Watch & learn</a></div></noscript></main>
 
-      <section class="section section-tight">
-        <div class="container">
-          <div class="section-head">
-            <span class="eyebrow" id="proofTitle"></span>
-            <p id="proofLead"></p>
-          </div>
-          <div id="proofGrid" class="grid-3"></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <h2 id="featuredTitle"></h2>
-            <p id="featuredLead"></p>
-          </div>
-          <div id="featuredGrid" class="product-grid"></div>
-        </div>
-      </section>
-
-      <section class="section section-tight">
-        <div class="container">
-          <div id="videoLearnTeaser" class="video-teaser"></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <h2 id="methodTitle"></h2>
-          </div>
-          <div id="methodGrid" class="grid-3"></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <h2 id="testimonialTitle"></h2>
-          </div>
-          <div id="testimonialGrid" class="grid-3"></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <h2 id="faqTitle"></h2>
-          </div>
-          <div id="faqList" class="faq-stack"></div>
-        </div>
-      </section>
-
-      <section id="contact" class="section">
-        <div class="container">
-          <div class="final-card">
-            <h2 id="finalTitle"></h2>
-            <p id="finalLead"></p>
-            <div class="hero-actions">
-              <a id="finalProductsButton" class="button button-primary" href="products.html">Browse catalog</a>
-              <a id="finalOrderButton" class="button button-secondary" href="order.html?product=bundle">Request course access</a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
+    <footer class="footer" id="contact">
       <div class="container footer-grid">
         <div class="footer-panel">
           <p id="footerNote"></p>

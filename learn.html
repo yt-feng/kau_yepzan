@@ -6,16 +6,22 @@
   <title>Short videos | tiktalk academy</title>
   <meta name="description" content="Practice language from short videos with quick quizzes on tiktalk academy." />
   <meta name="theme-color" content="#050816" />
-  <link rel="stylesheet" href="./styles.css?v=20260913-polish" />
+  <link rel="stylesheet" href="./styles.css?v=20260915-discovery" />
+  <link rel="stylesheet" href="./experience.css?v=20260915-discovery" />
   <script defer src="./translations.js?v=20260913-polish"></script>
   <script defer src="./video-data.js"></script>
-  <script defer src="./main.js?v=20260913-polish"></script>
-  <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+  <script defer src="./experience.js?v=20260915-discovery"></script>
+  <script defer src="./learning-core.js?v=20260915-discovery"></script>
+  <script defer src="./lesson-notes.js?v=20260915-discovery"></script>
+  <script defer src="./learning-copy.js?v=20260915-discovery"></script>
+  <script defer src="./learning.js?v=20260915-discovery"></script>
+  <script defer src="./main.js?v=20260915-discovery"></script>
+  <link rel="icon" type="image/svg+xml" href="./logo.svg?v=20260915-discovery" />
 </head>
 <body data-page="learn">
   <header class="site-header">
     <div class="container nav-shell">
-      <a class="brand" href="index.html"><img class="brand-mark" src="./logo.svg" alt="" aria-hidden="true"><span class="brand-copy"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></span></a>
+      <a class="brand" href="index.html"><img class="brand-mark" src="./logo.svg?v=20260915-discovery" alt="" aria-hidden="true"><span class="brand-copy"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></span></a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -26,12 +32,12 @@
         <a id="navLearn" href="learn.html">Short videos</a>
         <a id="navProducts" href="products.html">Courses</a>
         <a id="navServices" href="services.html">Services</a>
-        <a id="navCheckout" href="order.html?product=bundle">Get started</a>
+        <a id="navCheckout" href="learn.html">Start free</a>
         <a id="navContact" href="index.html#contact">Contact</a>
       </nav>
 
       <div class="lang-switch" aria-label="Language switcher">
-        <label id="langLabel" for="lang-en">Language</label>
+        <span id="langLabel">Language</span>
         <button id="lang-en" class="lang-btn" type="button" data-lang="en">EN</button>
         <button class="lang-btn" type="button" data-lang="zh">中</button>
         <button class="lang-btn" type="button" data-lang="ar">AR</button>
@@ -39,91 +45,7 @@
     </div>
   </header>
 
-  <main class="shorts-app">
-    <section class="shorts-shell" aria-label="Short-video language practice">
-      <div class="shorts-topbar">
-        <div class="shorts-channel">
-          <span class="live-dot" aria-hidden="true"></span>
-          <strong>tiktalk academy</strong>
-        </div>
-        <div class="feed-tabs" role="tablist" aria-label="Practice feed">
-          <button id="feedTab" class="is-active" type="button">For You</button>
-          <button id="taskToggle" type="button">Tasks</button>
-        </div>
-        <div class="shorts-score" aria-label="Learning progress">
-          <span><small>XP</small><strong id="shortsXp">0</strong></span>
-          <span><small>Streak</small><strong id="shortsStreak">0</strong></span>
-        </div>
-      </div>
-
-      <div class="shorts-main">
-        <div class="feed-device">
-          <div id="feedViewport" class="feed-viewport" tabindex="0" aria-label="Short-video practice feed">
-            <div id="feedTrack" class="feed-track"></div>
-          </div>
-        </div>
-
-        <aside id="learnDashboard" class="learning-dashboard" aria-label="Learning dashboard">
-          <div class="dashboard-card dashboard-hero">
-            <span class="dashboard-kicker" id="dailyGoalKicker">Daily goal</span>
-            <div class="daily-goal">
-              <strong id="dailyGoalText">0 / 5</strong>
-              <span id="dailyGoalLabel">clips today</span>
-            </div>
-            <div class="goal-bar"><span id="dailyGoalBar"></span></div>
-          </div>
-
-          <div class="dashboard-card">
-            <div class="dashboard-head">
-            <span class="dashboard-kicker" id="missionsKicker">Missions</span>
-              <strong id="missionSummary">0 ready</strong>
-            </div>
-            <div id="missionList" class="mission-list"></div>
-          </div>
-
-          <div class="dashboard-card">
-            <div class="dashboard-head">
-              <span class="dashboard-kicker" id="rankKicker">Learning rank</span>
-              <strong id="rankLabel">Rising</strong>
-            </div>
-            <div id="leaderboardList" class="leaderboard-list"></div>
-          </div>
-
-          <div class="dashboard-card">
-            <div class="dashboard-head">
-              <span class="dashboard-kicker" id="nextClipsKicker">Next clips</span>
-              <strong id="queueLabel">Recommended</strong>
-            </div>
-            <div id="queueList" class="queue-list"></div>
-          </div>
-        </aside>
-      </div>
-
-      <div id="quizSheet" class="quiz-sheet" hidden aria-live="polite">
-        <div class="quiz-sheet-card" role="dialog" aria-modal="true" aria-labelledby="quizSheetTitle">
-          <div class="quiz-sheet-head">
-            <span class="dashboard-kicker" id="quickCheckKicker">Quick check</span>
-            <button id="closeQuiz" class="icon-button" type="button" aria-label="Close quiz">x</button>
-          </div>
-          <h2 id="quizSheetTitle">Question</h2>
-          <p id="quizSheetPrompt"></p>
-          <div id="quizSheetAnswers" class="answer-grid"></div>
-          <p id="quizSheetFeedback" class="quiz-feedback"></p>
-        </div>
-      </div>
-
-      <div id="milestoneModal" class="milestone-modal" hidden>
-        <div class="milestone-card" role="dialog" aria-modal="true" aria-labelledby="milestoneTitle">
-          <span class="milestone-badge" id="levelUpBadge">Level up</span>
-          <h2 id="milestoneTitle">Mission complete</h2>
-          <p id="milestoneBody"></p>
-          <button id="closeMilestone" class="button button-primary" type="button">Continue</button>
-        </div>
-      </div>
-
-      <div id="shortsToast" class="shorts-toast" hidden></div>
-    </section>
-  </main>
+  <main id="learningApp" class="learning-app container"><noscript><h1>Watch & learn English</h1><p>Please enable JavaScript for video practice and saved expressions.</p></noscript></main>
 
   <footer class="footer">
     <div class="container">

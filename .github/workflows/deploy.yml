@@ -36,6 +36,9 @@ jobs:
       - name: Refresh video lesson data
         run: python3 scripts/build_video_data.py --limit 36 --quiet
 
+      - name: Check learning catalog and progression
+        run: node --test tests/learning.test.cjs
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

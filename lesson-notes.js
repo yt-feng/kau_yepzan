@@ -1,0 +1,48 @@
+// Editorial difficulty bands describe this library, not certified proficiency levels.
+// Examples and glosses are learning notes, not time-aligned video captions.
+window.LESSON_NOTES = {
+  A000: [2, 'work', 'Employer', 'My employer is hiring.', '雇主：雇用他人工作的人或组织。', 'صاحب العمل: شخص أو مؤسسة توظف الآخرين.'],
+  A001: [1, 'sounds', 'They are', 'They are my friends.', 'They 搭配 are：他们是我的朋友。', 'نستخدم are مع They: هم أصدقائي.'],
+  A002: [2, 'daily', 'Go on', 'Please go on.', 'Go on 可以表示“继续”。', 'يمكن أن تعني Go on: تابع.'],
+  A003: [3, 'culture', 'The Night of Decree', 'The Night of Decree is significant in Islam.', 'The Night of Decree：伊斯兰文化中的“盖德尔夜”。', 'The Night of Decree تعني ليلة القدر.'],
+  A004: [2, 'daily', 'By heart', 'I know this song by heart.', 'By heart：熟记，不用看就能记起来。', 'By heart: عن ظهر قلب.'],
+  A005: [2, 'daily', 'Let it go', 'Take a breath. Let it go.', 'Let it go：放下让你困扰的事。', 'Let it go: تجاوز الأمر الذي يزعجك.'],
+  A006: [2, 'daily', 'Enough is enough', 'Enough is enough. Please stop.', 'Enough is enough：够了，别再继续了。', 'Enough is enough: لقد طفح الكيل.'],
+  A007: [3, 'sounds', 'I have been', 'I have been here since Monday.', 'Have been 联系现在；had been 描述另一个过去事件之前的状态。', 'Have been تربط الماضي بالحاضر؛ had been تصف ما سبق حدثاً ماضياً آخر.'],
+  A009: [1, 'sounds', 'To me', 'He gave the book to me.', 'To me：给我。介词后面使用 me 等宾格。', 'To me: إليّ. نستخدم ضمير المفعول بعد حرف الجر.'],
+  A010: [1, 'daily', 'As you like', 'Tea or coffee? As you like.', 'As you like：随你喜欢，由你选择。', 'As you like: كما تحب.'],
+  A011: [2, 'sounds', 'Fill / feel', 'Fill the cup. I feel happy.', 'Fill：装满；feel：感觉。留意两个元音。', 'Fill: يملأ؛ feel: يشعر. انتبه لاختلاف الصوتين.'],
+  A012: [1, 'food', 'Protein', 'Chicken contains protein.', 'Protein：蛋白质。Chicken 是一种含蛋白质的食物。', 'Protein: بروتين. الدجاج يحتوي على البروتين.'],
+  A013: [2, 'sounds', 'Hit / heat / hate', 'I hate the heat.', 'Hit：击打；heat：热；hate：厌恶。', 'Hit: يضرب؛ heat: حرارة؛ hate: يكره.'],
+  A014: [2, 'daily', 'Knock on the door', 'Please knock on the door.', 'Tap 轻敲，knock 敲门，bang on 用力砰砰敲。', 'Tap نقر خفيف؛ knock طرق؛ bang on طرق بقوة.'],
+  A016: [2, 'food', 'Calories', 'This meal has 500 calories.', 'Calories：衡量食物能量的单位。', 'Calories: وحدات لقياس الطاقة في الطعام.'],
+  A017: [1, 'daily', 'Open / closed', 'The shop is open.', 'Open：开着的；closed：关着的。', 'Open: مفتوح؛ closed: مغلق.'],
+  A018: [1, 'daily', 'Can I try it on?', 'Can I try it on?', '买衣服时可以这样问：“我能试穿吗？”', 'اسأل في متجر الملابس: هل يمكنني تجربته؟'],
+  A019: [1, 'daily', "That's it", "That's it. We are done.", 'That’s it 可以表示“就这些，完成了”。', 'يمكن أن تعني That’s it: هذا كل شيء، انتهينا.'],
+  A020: [3, 'work', 'Characteristic', 'Patience is a useful characteristic.', 'Characteristic：特征或特质。', 'Characteristic: صفة أو سمة مميزة.'],
+  A021: [3, 'daily', 'Gullible', "Don't be so gullible.", 'Gullible：容易轻信或受骗的。', 'Gullible: ساذج وسهل الخداع.'],
+  A022: [1, 'food', 'Salmon', "I'd like the salmon, please.", 'Salmon：三文鱼。可以用这句点餐。', 'Salmon: سمك السلمون. استخدم الجملة لطلبه.'],
+  A023: [2, 'daily', 'Cough', 'I have a cough.', 'Cough：咳嗽。I have a cough：我咳嗽。', 'Cough: سعال. I have a cough: لدي سعال.'],
+  A024: [2, 'sounds', 'By yourself', 'Did you do it by yourself?', 'By yourself：独自，不借助别人。', 'By yourself: بمفردك، دون مساعدة.'],
+  A025: [1, 'daily', 'You look tired', 'You look tired today.', 'Look 也能表示“看起来”，后接形容词。', 'قد تعني Look: يبدو، وتتبعها صفة.'],
+  A026: [1, 'daily', 'Feel sick', 'I feel sick.', 'Sick：生病或感觉恶心，并不等同于累。', 'Sick: مريض أو يشعر بالغثيان، وليس مجرد التعب.'],
+  A027: [1, 'sounds', 'I want to…', 'I want to read this book.', 'Want to 后接动词原形，表示想做某事。', 'Want to يتبعها الفعل بصيغته الأساسية للتعبير عن الرغبة.'],
+  A028: [2, 'daily', 'Apartment / flat', 'I live in a small apartment.', 'Apartment 多用于美式英语，flat 多用于英式英语。', 'Apartment شائعة في الأمريكية؛ flat شائعة في البريطانية.'],
+  A029: [1, 'culture', 'Dove', 'A dove is flying over the park.', 'Dove：鸽子。这里用作名词。', 'Dove: حمامة. تُستخدم هنا اسماً.']
+};
+window.LESSON_MEANINGS = {
+  A000:'A person or organization that hires people to work.', A001:'Use “are” with “they”.',
+  A002:'Continue doing or saying something.', A003:'The Night of Decree, a significant night in Islam.',
+  A004:'From memory, without looking.', A005:'Stop holding on to something that troubles you.',
+  A006:'A way to say that something must stop.', A007:'“Have been” connects to now; “had been” refers to a time before another past event.',
+  A009:'“Me” is the object form after a preposition such as “to”.', A010:'Choose whatever you prefer.',
+  A011:'“Fill” means make full. “Feel” means experience an emotion or sensation.', A012:'A nutrient found in foods such as chicken, beans, and eggs.',
+  A013:'“Hit” means strike. “Heat” is warmth. “Hate” is strong dislike.', A014:'“Tap” is gentle, “knock” is moderate, and “bang on” is loud.',
+  A016:'Units used to measure energy in food.', A017:'“Open” allows entry; “closed” does not.',
+  A018:'Ask to put on clothing to check whether it fits.', A019:'A way to say something is finished or complete.',
+  A020:'A quality or feature of a person or thing.', A021:'Easily tricked into believing something.',
+  A022:'A type of fish you might see on a menu.', A023:'To force air out of your throat suddenly; also the noun for this action.',
+  A024:'Alone, or without help from others.', A025:'“Look” can mean “appear”, followed by an adjective.',
+  A026:'To feel ill or nauseous, rather than simply tired.', A027:'Use “want to” followed by a verb to express a desire.',
+  A028:'“Apartment” is common in American English; “flat” in British English.', A029:'A bird; “dove” is used as a noun here.'
+};
