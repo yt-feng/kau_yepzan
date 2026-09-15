@@ -2,6 +2,10 @@ const EMAIL = 'info@tiktalk.ac';
 const COURSE_KEYS = ['chinese101', 'practice', 'bundle'];
 const PRODUCT_PAGE_KEYS = ['videoEnglish', ...COURSE_KEYS];
 const SERVICE_KEYS = ['translation', 'zoom'];
+const PADDLE_CLIENT_TOKEN = 'live_7a3b2cc0efdae14cdeaf0d91e37';
+const PADDLE_BUNDLE_PRICE_ID = 'pri_01m2ht5kd7796zdw5rm8fhxez2';
+const PADDLE_SUCCESS_URL = 'https://tiktalk.ac/order-success.html?transaction_id={transaction_id}';
+let paddleInitialized = false;
 
 const PRODUCTS = {
   videoEnglish: {
@@ -55,11 +59,11 @@ const PRODUCTS = {
   bundle: {
     name: 'Chinese Foundations + Practice',
     label: 'Recommended course path',
-    price: 'USD 199 first month',
-    summaryPrice: 'USD 199 first month',
-    description: 'The recommended digital course path for serious beginners: foundations first, then self-paced guided practice. The full course path will open after the lessons are published.',
-    features: ['Chinese Foundations included', 'First month of digital practice included', 'Structured course sequence', 'Self-paced learning path'],
-    cta: 'View course path'
+    price: 'USD 199 one-time',
+    summaryPrice: 'USD 199 one-time',
+    description: 'The recommended digital course path for serious beginners: foundations first, then self-paced guided practice. Course access instructions follow after payment confirmation.',
+    features: ['Chinese Foundations included', 'Digital practice included', 'Structured course sequence', 'Self-paced learning path'],
+    cta: 'Enroll securely'
   }
 };
 
@@ -70,7 +74,7 @@ const PRODUCT_COPY = {
     chinese101: { name: '中文基础课程', label: '课程准备中', price: 'USD 149', summaryPrice: 'USD 149', description: '从汉字、发音和词语构成开始，建立中文入门基础。完整课件和访问方式会在报名开放前公布。', features: ['完整录播课程', '汉字逻辑', '发音与词语构成', '适合中文初学者'], cta: '查看课程路径' },
     practice: { name: '中文练习课程', label: '课程准备中', price: 'USD 89 / 月', summaryPrice: 'USD 89 / 月', description: '按目标推进的数字中文练习课程，包含结构化课程、练习材料和阶段检查。', features: ['按目标制定计划', '包含数字材料', '阶段性学习检查', '自主学习结构'], cta: '查看课程路径' },
     zoom: { name: 'Zoom 一对一辅导', label: '定制支持', price: 'USD 120 / 小时', summaryPrice: 'USD 120 / 小时', description: '适合需要针对性诊断、纠错或学习规划的学习者。', features: ['个性化诊断', '针对性纠错', '学习计划复盘', '适合具体问题'], cta: '预约咨询' },
-    bundle: { name: '中文基础 + 练习课程', label: '推荐课程路径', price: 'USD 199 首月', summaryPrice: 'USD 199 首月', description: '为认真学习者设计的完整路径：先学基础，再进行自主练习。课程会在课件发布后开放。', features: ['包含中文基础课程', '首月练习支持', '结构化课程顺序', '自主学习路径'], cta: '查看课程路径' }
+    bundle: { name: '中文基础 + 练习课程', label: '推荐课程路径', price: 'USD 199 一次性', summaryPrice: 'USD 199 一次性', description: '为认真学习者设计的完整路径：先学基础，再进行自主练习。付款确认后，我们会发送课程访问说明。', features: ['包含中文基础课程', '练习支持', '结构化课程顺序', '自主学习路径'], cta: '安全报名' }
   },
   ar: {
     videoEnglish: { name: 'تدريب الإنجليزية عبر المقاطع القصيرة', label: 'معاينة مجانية', price: 'ابدأ التدريب', summaryPrice: 'معاينة مجانية', description: 'تدريب سريع على الإنجليزية للناطقين بالعربية: شاهد مقطعاً قصيراً وأجب عن سؤال واحد ثم واصل.', features: ['دروس فيديو عمودية', 'اختبار سريع بعد كل مقطع', 'محتوى إنجليزي مع دعم عربي', 'يعمل على الهاتف والكمبيوتر'], cta: 'ابدأ التدريب' },
@@ -78,7 +82,7 @@ const PRODUCT_COPY = {
     chinese101: { name: 'أساسيات اللغة الصينية', label: 'الدورة قيد الإعداد', price: '149 USD', summaryPrice: '149 USD', description: 'دورة رقمية للمبتدئين عن الحروف الصينية والأصوات وطريقة بناء الكلمات. ستُنشر الدروس وتفاصيل الوصول قبل فتح التسجيل.', features: ['دروس مسجلة كاملة', 'منطق الحروف الصينية', 'الأصوات وبناء الكلمات', 'خطوة أولى قوية للمبتدئين'], cta: 'عرض مسار الدورة' },
     practice: { name: 'دورة التدريب على الصينية', label: 'الدورة قيد الإعداد', price: '89 USD / شهرياً', summaryPrice: '89 USD / شهرياً', description: 'دورة رقمية ذاتية الإيقاع بدروس منظمة ومواد تدريب ونقاط متابعة واضحة.', features: ['خطة حسب الهدف', 'مواد رقمية', 'نقاط متابعة', 'تعلم ذاتي'], cta: 'عرض مسار الدورة' },
     zoom: { name: 'جلسة فردية عبر Zoom', label: 'دعم مخصص', price: '120 USD / ساعة', summaryPrice: '120 USD / ساعة', description: 'تشخيص وتصحيح وتخطيط تعليمي مخصص عندما تحتاج إلى مساعدة مركزة.', features: ['تشخيص مخصص', 'تصحيح متقدم', 'مراجعة خطة التعلم', 'مناسبة للأسئلة المحددة'], cta: 'احجز جلسة' },
-    bundle: { name: 'أساسيات الصينية + التدريب', label: 'المسار الموصى به', price: '199 USD للشهر الأول', summaryPrice: '199 USD للشهر الأول', description: 'المسار الرقمي الموصى به للمبتدئين الجادين: الأساسيات أولاً ثم التدريب الذاتي الموجه. يفتح المسار بعد نشر الدروس.', features: ['أساسيات الصينية مشمولة', 'التدريب للشهر الأول', 'تسلسل منظم', 'مسار تعلم ذاتي'], cta: 'عرض مسار الدورة' }
+    bundle: { name: 'أساسيات الصينية + التدريب', label: 'المسار الموصى به', price: '199 USD دفعة واحدة', summaryPrice: '199 USD دفعة واحدة', description: 'المسار الرقمي الموصى به للمبتدئين الجادين: الأساسيات أولاً ثم التدريب الذاتي الموجه. نرسل تعليمات الوصول بعد تأكيد الدفع.', features: ['أساسيات الصينية مشمولة', 'تدريب موجه', 'تسلسل منظم', 'مسار تعلم ذاتي'], cta: 'سجّل بأمان' }
   }
 };
 
@@ -146,13 +150,76 @@ const LEARN_COPY = {
 };
 const ui = { ...(STATIC_COPY[currentLang] || STATIC_COPY.en), ...(LEARN_COPY[currentLang] || LEARN_COPY.en) };
 
+const PAYMENT_COPY = {
+  en: {
+    button: 'Enroll securely',
+    lead: 'Select a course path. The available path can be purchased securely; other paths remain inquiry-based until published.',
+    note: 'Secure checkout is available for the Chinese Foundations + Practice path. The final tax-inclusive total is shown before confirmation.',
+    status: 'This course path is ready for secure checkout. Course access instructions are sent after payment confirmation.',
+    enrollment: 'Paddle processes payment securely. Course access instructions are sent after payment confirmation; unreleased paths remain inquiry-based.',
+    fallback: 'Secure checkout is temporarily unavailable. Use the email link below and we will help you enroll.',
+    completed: 'Checkout completed. Keep the receipt email and transaction reference for your records.'
+  },
+  zh: {
+    button: '安全报名',
+    lead: '选择课程路径。当前可用路径支持安全结账，其他路径会在发布前保持咨询报名。',
+    note: '“中文基础 + 练习课程”已开放安全结账。确认前会显示最终含税金额。',
+    status: '该课程路径已开放安全结账。付款确认后，我们会发送课程访问说明。',
+    enrollment: '支付由 Paddle 安全处理。付款确认后发送课程访问说明；尚未发布的课程仍通过邮件咨询。',
+    fallback: '安全结账暂时不可用，请使用下方邮件入口，我们会协助你报名。',
+    completed: '结账流程已完成。请保留收据邮件和交易编号。'
+  },
+  ar: {
+    button: 'سجّل بأمان',
+    lead: 'اختر مساراً للدورة. يمكن شراء المسار المتاح بأمان، بينما تبقى المسارات الأخرى للاستفسار حتى نشرها.',
+    note: 'التسجيل الآمن متاح لمسار أساسيات الصينية + التدريب. يظهر المبلغ النهائي شاملاً الضريبة قبل التأكيد.',
+    status: 'هذا المسار جاهز للتسجيل الآمن. نرسل تعليمات الوصول بعد تأكيد الدفع.',
+    enrollment: 'يعالج Paddle الدفع بأمان. نرسل تعليمات الوصول بعد تأكيد الدفع، بينما تبقى المسارات غير المنشورة للاستفسار.',
+    fallback: 'التسجيل الآمن غير متاح مؤقتاً. استخدم رابط البريد أدناه وسنساعدك في التسجيل.',
+    completed: 'اكتملت عملية الدفع. احتفظ برسالة الإيصال ومرجع المعاملة.'
+  }
+};
+
+const SUCCESS_COPY = {
+  en: {
+    eyebrow: 'Payment flow complete',
+    title: 'Thanks — your checkout is complete.',
+    lead: 'Paddle has handled the payment flow and sent the receipt. We will send course access instructions to the purchaser email after payment confirmation.',
+    reference: 'Transaction reference',
+    noReference: 'Not provided',
+    note: 'Need a refund? Our 14-day no-conditions refund policy is available here.',
+    home: 'Back to home',
+    refund: 'Refund policy'
+  },
+  zh: {
+    eyebrow: '支付流程完成',
+    title: '谢谢，结账流程已完成。',
+    lead: 'Paddle 已处理支付流程并发送收据。付款确认后，我们会将课程访问说明发送到购买时填写的邮箱。',
+    reference: '交易编号',
+    noReference: '未提供',
+    note: '需要退款？请查看我们的 14 天无条件退款政策。',
+    home: '返回首页',
+    refund: '退款政策'
+  },
+  ar: {
+    eyebrow: 'اكتملت عملية الدفع',
+    title: 'شكراً، اكتملت عملية التسجيل.',
+    lead: 'عالج Paddle عملية الدفع وأرسل الإيصال. نرسل تعليمات الوصول إلى البريد الإلكتروني المستخدم في الشراء بعد تأكيد الدفع.',
+    reference: 'مرجع المعاملة',
+    noReference: 'غير متاح',
+    note: 'تحتاج إلى استرداد؟ راجع سياسة الاسترداد غير المشروط لمدة 14 يوماً.',
+    home: 'العودة إلى الرئيسية',
+    refund: 'سياسة الاسترداد'
+  }
+};
+
 document.documentElement.lang = currentLang;
 document.documentElement.dir = t.dir;
 
 const PAGE_TITLES = {
-  en: { home: 'tiktalk academy | Learn language from tiktalk short videos', products: 'Courses | tiktalk academy', services: 'Services | tiktalk academy', enrollment: 'Course enrollment | tiktalk academy', learn: 'Short videos | tiktalk academy', terms: 'Terms | tiktalk academy', refund: 'Refund policy | tiktalk academy', privacy: 'Privacy | tiktalk academy' },
-  zh: { home: 'tiktalk academy｜从短视频学习语言', products: '课程｜tiktalk academy', services: '独立服务｜tiktalk academy', enrollment: '课程报名｜tiktalk academy', learn: '短视频｜tiktalk academy', terms: '条款｜tiktalk academy', refund: '退款政策｜tiktalk academy', privacy: '隐私政策｜tiktalk academy' },
-  ar: { home: 'tiktalk academy | تعلم اللغة من المقاطع القصيرة', products: 'الدورات | tiktalk academy', services: 'الخدمات المستقلة | tiktalk academy', enrollment: 'التسجيل في الدورة | tiktalk academy', learn: 'المقاطع القصيرة | tiktalk academy', terms: 'الشروط | tiktalk academy', refund: 'سياسة الاسترداد | tiktalk academy', privacy: 'الخصوصية | tiktalk academy' }
+  en: { home: 'tiktalk academy | Learn language from tiktalk short videos', products: 'Courses | tiktalk academy', services: 'Services | tiktalk academy', enrollment: 'Course enrollment | tiktalk academy', success: 'Payment received | tiktalk academy', learn: 'Short videos | tiktalk academy', terms: 'Terms | tiktalk academy', refund: 'Refund policy | tiktalk academy', privacy: 'Privacy | tiktalk academy' },
+  zh: { home: 'tiktalk academy｜从短视频学习语言', products: '课程｜tiktalk academy', services: '独立服务｜tiktalk academy', enrollment: '课程报名｜tiktalk academy', success: '支付流程已完成｜tiktalk academy', learn: '短视频｜tiktalk academy', terms: '条款｜tiktalk academy', refund: '退款政策｜tiktalk academy', privacy: '隐私政策｜tiktalk academy' },
+  ar: { home: 'tiktalk academy | تعلم اللغة من المقاطع القصيرة', products: 'الدورات | tiktalk academy', services: 'الخدمات المستقلة | tiktalk academy', enrollment: 'التسجيل في الدورة | tiktalk academy', success: 'اكتمل الدفع | tiktalk academy', learn: 'المقاطع القصيرة | tiktalk academy', terms: 'الشروط | tiktalk academy', refund: 'سياسة الاسترداد | tiktalk academy', privacy: 'الخصوصية | tiktalk academy' }
 };
 const fileKey = (window.location.pathname.split('/').pop() || 'index.html').replace('.html', '');
 const pageKey = document.body.dataset.page === 'policy' ? fileKey : (document.body.dataset.page || 'home');
@@ -217,20 +284,81 @@ function renderProducts() { const grid = $('productCatalog'); if (grid) grid.inn
 
 function renderServices() { const grid = $('serviceCatalog'); if (grid) grid.innerHTML = SERVICE_KEYS.map(productCard).join(''); }
 
+function paddleSettings() {
+  return {
+    displayMode: 'overlay',
+    variant: 'one-page',
+    theme: 'light',
+    locale: currentLang === 'zh' ? 'zh-Hans' : currentLang === 'ar' ? 'ar' : 'en',
+    successUrl: PADDLE_SUCCESS_URL
+  };
+}
+
+function initializePaddle() {
+  if (paddleInitialized) return true;
+  if (!window.Paddle?.Initialize) return false;
+  try {
+    window.Paddle.Initialize({
+      token: PADDLE_CLIENT_TOKEN,
+      checkout: { settings: paddleSettings() },
+      eventCallback: (event) => {
+        if (event?.name === 'checkout.completed') setText('courseStatus', (PAYMENT_COPY[currentLang] || PAYMENT_COPY.en).completed);
+      }
+    });
+    paddleInitialized = true;
+    return true;
+  } catch (error) {
+    console.warn('Paddle checkout could not be initialized.', error);
+    return false;
+  }
+}
+
+function openPaddleCheckout() {
+  const copy = PAYMENT_COPY[currentLang] || PAYMENT_COPY.en;
+  if (!initializePaddle() || !window.Paddle?.Checkout?.open) {
+    setText('courseStatus', copy.fallback);
+    return;
+  }
+  try {
+    window.Paddle.Checkout.open({
+      items: [{ priceId: PADDLE_BUNDLE_PRICE_ID, quantity: 1 }],
+      settings: paddleSettings()
+    });
+  } catch (error) {
+    console.warn('Paddle checkout could not be opened.', error);
+    setText('courseStatus', copy.fallback);
+  }
+}
+
 function renderCheckout() {
   const select = $('productSelect');
   if (!select) return;
   select.innerHTML = COURSE_KEYS.map((key) => `<option value="${key}">${escapeHtml(productFor(key).name)}</option>`).join('');
   const params = new URLSearchParams(window.location.search);
   select.value = COURSE_KEYS.includes(params.get('product')) ? params.get('product') : 'bundle';
+  const paddleButton = $('paddleCheckoutButton');
+  const paymentNote = $('paymentNote');
+  const paymentCopy = PAYMENT_COPY[currentLang] || PAYMENT_COPY.en;
   const update = () => {
     const product = productFor(select.value);
+    setText('checkoutLead', paymentCopy.lead);
     setText('summaryProduct', product.name);
     setText('summaryTotal', product.summaryPrice);
     const link = $('emailOrderLink');
     if (link) link.href = `mailto:${EMAIL}?subject=Course access request: ${encodeURIComponent(product.name)}&body=${encodeURIComponent('I would like to request access information for: ' + product.name + '\n\nMy name:\nContact:\nLearning goal:\nPreferred start date:')}`;
+    const isBundle = select.value === 'bundle';
+    if (paddleButton) {
+      paddleButton.hidden = !isBundle;
+      setText('paddleCheckoutButton', paymentCopy.button);
+      if (isBundle) setText('courseStatus', initializePaddle() ? paymentCopy.status : paymentCopy.fallback);
+      else setText('courseStatus', t.courseStatus || 'Course materials are being prepared.');
+    }
+    if (paymentNote) paymentNote.textContent = isBundle ? paymentCopy.note : (t.enrollmentNote || 'Course access details will be confirmed by email.');
+    setText('enrollmentNote', isBundle ? paymentCopy.enrollment : (t.enrollmentNote || 'Course access details will be confirmed by email.'));
   };
   select.addEventListener('change', update);
+  paddleButton?.addEventListener('click', (event) => { event.preventDefault(); openPaddleCheckout(); });
+  window.addEventListener('load', update, { once: true });
   update();
   const form = $('orderForm');
   if (form) form.addEventListener('submit', (event) => {
@@ -240,6 +368,20 @@ function renderCheckout() {
     const body = encodeURIComponent(`I am interested in: ${product.name}\nName: ${data.get('name')}\nEmail: ${data.get('email')}\nWhatsApp: ${data.get('whatsapp')}\nGoal or project details: ${data.get('goal')}`);
     window.location.href = `mailto:${EMAIL}?subject=Inquiry: ${encodeURIComponent(product.name)}&body=${body}`;
   });
+}
+
+function renderSuccess() {
+  if (document.body.dataset.page !== 'success') return;
+  const copy = SUCCESS_COPY[currentLang] || SUCCESS_COPY.en;
+  setText('successEyebrow', copy.eyebrow);
+  setText('successTitle', copy.title);
+  setText('successLead', copy.lead);
+  setText('successReferenceLabel', copy.reference);
+  setText('successRefund', copy.note);
+  setText('successHome', copy.home);
+  setText('successRefundLink', copy.refund);
+  const transactionId = new URLSearchParams(window.location.search).get('transaction_id');
+  setText('successTransactionValue', transactionId || copy.noReference);
 }
 
 const LEGACY_LEARN_PROGRESS_KEY = 'yepzanVideoProgress';
@@ -968,4 +1110,5 @@ renderHome();
 renderProducts();
 renderServices();
 renderCheckout();
+renderSuccess();
 renderLearn();

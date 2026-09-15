@@ -84,6 +84,7 @@ img { display: block; max-width: 100%; }
 .button.is-disabled:hover, .button[aria-disabled="true"]:hover { transform: none; }
 .button-primary { color: #08101f; font-weight: 700; background: linear-gradient(135deg, var(--accent-2), #d1f8ff); border-color: transparent; }
 .button-secondary { background: rgba(255,255,255,0.03); color: var(--text); }
+.paddle-button { cursor: pointer; }
 .button-full { width: 100%; }
 .stat-card, .glass-card, .product-card, .quote-card, .step-card, .final-card, .footer-panel, .checkout-panel, .summary-box, .faq-item, .note-card {
   border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px);
@@ -135,7 +136,12 @@ img { display: block; max-width: 100%; }
 .summary-line, .summary-total { display: flex; justify-content: space-between; gap: 1rem; }
 .summary-total { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font-weight: 700; color: var(--text); }
 .inline-note { font-size: 0.88rem; color: var(--muted); }
+.payment-note { margin-top: 0.8rem; }
 .course-status { min-height: 1.6rem; margin: 1rem 0 0; color: #ffe3a1; font-size: 0.92rem; }
+.success-panel { max-width: 760px; }
+.success-panel h1 { margin: 1rem 0 0.9rem; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -0.04em; }
+.success-reference { margin-top: 1.4rem; }
+.success-reference strong { overflow-wrap: anywhere; text-align: end; }
 .policy-links { display: flex; flex-wrap: wrap; gap: 0.8rem; }
 .policy-links a { color: var(--muted); font-size: 0.86rem; }
 .policy-links a:hover, .policy-links a:focus-visible { color: var(--text); }

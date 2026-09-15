@@ -15,7 +15,8 @@ This repository contains the static site skeleton for:
 - learn.html — short-video learning module
 - products.html — course and learning-path catalog
 - services.html — separate inquiry-only translation and language support services
-- order.html — course selection and inquiry-based enrollment request
+- order.html — course selection and secure checkout entry for the published bundle
+- order-success.html — post-checkout confirmation and transaction reference page
 - checkout.html — legacy redirect kept for old links
 - terms.html, refund.html, privacy.html — public policy pages for learners and payment review
 - styles.css — responsive static styling
@@ -25,13 +26,13 @@ This repository contains the static site skeleton for:
 
 ## Payment boundary
 
-The public site intentionally contains no payment-provider SDK, token, price ID, API key, or webhook secret. It currently presents course information and sends an enrollment request to the support address while the lessons and access rules are being prepared.
+The published Chinese Foundations + Practice bundle is connected to Paddle Checkout through Paddle.js. The site contains only Paddle's public client-side token and the public price reference for the USD 199 one-time course path. Paddle documents client-side tokens as the browser-safe credential for Paddle.js; API keys and webhook secrets are not included here.
 
-When the courses are ready, connect the primary enrollment action to a server-side checkout endpoint. Keep payment-provider credentials, checkout creation, webhook verification, order records, and course entitlement writeback on the server. The browser should receive only the customer-facing checkout result.
+This repository is a static GitHub Pages site, so it does not yet contain a server-side webhook, transaction verification endpoint, order database, or automatic course-entitlement service. The success page is a customer-facing return page, not proof of a server-verified entitlement. Until a backend is added, course access instructions are sent after payment confirmation using the purchaser email.
 
 ## Content release
 
-The KAU course cards are currently a public scaffold. Upload the final lesson files, learning outcomes, access rules, and final prices before enabling paid enrollment.
+The KAU course cards remain a public scaffold for the lesson content. Upload the final lesson files, learning outcomes, and access rules as they are ready. The bundle price is already configured in Paddle and the other course paths remain inquiry-based until their content and prices are published.
 
 Paid enrollment is reserved for the digital course products. Translation and one-to-one support remain separate inquiry-based services.
 

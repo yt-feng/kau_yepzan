@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Course enrollment | tiktalk academy</title>
-  <meta name="description" content="Choose a tiktalk academy course path and request access when it is available." />
-  <link rel="stylesheet" href="./styles.css?v=20260913-polish" />
+  <meta name="description" content="Choose a tiktalk academy course path and enroll securely in the available digital course." />
+  <link rel="stylesheet" href="./styles.css?v=20260915-paddle" />
+  <script defer src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script defer src="./translations.js?v=20260913-polish"></script>
-  <script defer src="./main.js?v=20260913-polish"></script>
+  <script defer src="./main.js?v=20260915-paddle"></script>
   <link rel="icon" type="image/svg+xml" href="./logo.svg" />
 </head>
 <body data-page="enrollment">
@@ -37,10 +38,11 @@
         <div class="checkout-panel">
           <span class="success-pill" id="checkoutEyebrow">Course enrollment</span>
           <h2 id="checkoutTitle">Choose your course path</h2>
-          <p id="checkoutLead">Select a course to request access. We will confirm availability, included materials, and the next enrollment step by email.</p>
+          <p id="checkoutLead">Select a course path. The available path can be purchased securely; other paths remain inquiry-based until published.</p>
           <div class="field-group"><label id="productSelectLabel" for="productSelect">Course path</label><select id="productSelect" name="product"></select></div>
-          <div class="hero-actions"><a id="emailOrderLink" class="button button-primary" href="mailto:info@tiktalk.ac">Request course access</a><a id="backToCourses" class="button button-secondary" href="products.html">Back to courses</a></div>
-          <p id="courseStatus" class="course-status" role="status">Course materials are being prepared. We will confirm the next release step by email.</p>
+          <div class="hero-actions"><button id="paddleCheckoutButton" class="button button-primary paddle-button" type="button" hidden>Enroll securely</button><a id="emailOrderLink" class="button button-secondary" href="mailto:info@tiktalk.ac">Request course access</a><a id="backToCourses" class="button button-secondary" href="products.html">Back to courses</a></div>
+          <p id="courseStatus" class="course-status" role="status">This course path is ready for secure checkout.</p>
+          <p id="paymentNote" class="inline-note payment-note">Secure checkout is available for the Chinese Foundations + Practice path.</p>
           <p id="enrollmentNote" class="inline-note">Access details and any payment step will be shown only after the course is published.</p>
         </div>
         <aside class="checkout-panel">

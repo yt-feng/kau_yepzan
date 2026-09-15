@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment received | tiktalk academy</title>
+  <meta name="description" content="Confirmation page for tiktalk academy course checkout." />
+  <link rel="stylesheet" href="./styles.css?v=20260915-paddle" />
+  <script defer src="./translations.js?v=20260913-polish"></script>
+  <script defer src="./main.js?v=20260915-paddle"></script>
+  <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+</head>
+<body data-page="success">
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="index.html"><img class="brand-mark" src="./logo.svg" alt="" aria-hidden="true"><span class="brand-copy"><strong id="brandName">tiktalk academy</strong><span id="brandTagline">Learn language from tiktalk short videos</span></span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+        <a id="navHome" href="index.html">Home</a>
+        <a id="navLearn" href="learn.html">Short videos</a>
+        <a id="navProducts" href="products.html">Courses</a>
+        <a id="navServices" href="services.html">Services</a>
+        <a id="navCheckout" href="order.html?product=bundle">Get started</a>
+        <a id="navContact" href="index.html#contact">Contact</a>
+      </nav>
+      <div class="lang-switch" aria-label="Language switcher">
+        <label id="langLabel" for="lang-en">Language</label>
+        <button id="lang-en" class="lang-btn" type="button" data-lang="en">EN</button>
+        <button class="lang-btn" type="button" data-lang="zh">中</button>
+        <button class="lang-btn" type="button" data-lang="ar">AR</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="section page-hero">
+      <div class="container checkout-layout">
+        <article class="checkout-panel success-panel">
+          <span class="success-pill" id="successEyebrow">Payment flow complete</span>
+          <h1 id="successTitle">Thanks — your checkout is complete.</h1>
+          <p id="successLead">Paddle has handled the payment flow and sent the receipt. We will send course access instructions to the purchaser email after payment confirmation.</p>
+          <div class="summary-box success-reference">
+            <div class="summary-line"><span id="successReferenceLabel">Transaction reference</span><strong id="successTransactionValue">Not provided</strong></div>
+          </div>
+          <p id="successRefund" class="inline-note">Need a refund? Our 14-day no-conditions refund policy is available here.</p>
+          <div class="hero-actions"><a id="successHome" class="button button-primary" href="index.html">Back to home</a><a id="successRefundLink" class="button button-secondary" href="refund.html">Refund policy</a></div>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="container"><small>© <span id="year"></span> tiktalk academy · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="privacy.html">Privacy</a></small></div></footer>
+</body>
+</html>
